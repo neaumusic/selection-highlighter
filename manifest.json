@@ -1,0 +1,15 @@
+{
+  "manifest_version":2,
+  "name":"selection-highlighter",
+  "version":"0.1",
+  "description":"Highlights all occurrences of a selection. Keep mouse button down while copying a selection, or copy from context menu.",
+  "content_scripts":
+  [{
+    "run_at":"document_end",
+    "matches":["<all_urls>"],
+    "js":["jquery.min.js","jquery.highlight.js","highlighter.js"]
+  }],
+  "permissions": [
+    "tabs", "<all_urls>"
+  ]
+}
