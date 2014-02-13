@@ -8,7 +8,7 @@ var highlightListener = function(){
       word += selection.getRangeAt(i);
     }
     jQuery('html').highlight(word, {wordsOnly: true});
-    $('.highlight').css({'background-color':'yellow'});
+    $('.highlightSel').css({'background-color':'yellow'});
   };
 };
 
