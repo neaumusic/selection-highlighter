@@ -13,11 +13,9 @@ function handleSelectionChange (e) {
 
     var allTextNodes = getAllTextNodes(document.body),
         currentTextNode,
-        match,
-        regexString = selectionString.replace("!@#$%^&.*]",""),
-        regex = new RegExp(regexString);
+        matchIndex;
 
-    if (regexString.length < 3) {
+    if (selectionString.length < 3) {
         return; // short selection
     } else if (selection.anchorNode !== selection.focusNode) {
         return; // selection crosses textNodes
@@ -31,11 +29,11 @@ function handleSelectionChange (e) {
             currentTextNode = allTextNodes[i];
             parentNodeName = currentTextNode.parentNode.nodeName;
             if (parentNodeName !== "SCRIPT" && parentNodeName !== "STYLE" && parentNodeName !== "HEAD") {
-                if (match = currentTextNode.data.match(regex)) {
-                    var isolatedTextNode = currentTextNode.splitText(match.index); // remove preceding
+                if ((matchIndex = currentTextNode.data.indexOf(selectionString)) !== -1) {
+                    var isolatedTextNode = currentTextNode.splitText(matchIndex); // remove preceding
                         allTextNodes.push(isolatedTextNode.splitText(selectionString.length)); // remove & save trailing
-                    if ((selection.anchorNode !== currentTextNode || selection.anchorOffset !== match.index) &&
-                        (selection.focusNode !== currentTextNode || selection.focusOffset !== match.index)) {
+                    if ((selection.anchorNode !== currentTextNode || selection.anchorOffset !== matchIndex) &&
+                        (selection.focusNode !== currentTextNode || selection.focusOffset !== matchIndex)) {
 
                         var clonedStyledSpan = highlightedSpanTemplate.cloneNode(true);
                             clonedStyledSpan.appendChild(isolatedTextNode.cloneNode(true));
