@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
-  "name": "selection-highlighter",
-  "version": "1.0",
-  "description": "Highlights all occurrences of a selection. Keep mouse button down while copying a selection, or copy from context menu.",
+  "name": "Selection Highlighter",
+  "version": "1.2",
+  "description": "Passively highlights occurrences of selected text. Maintains current text selection.",
   "content_scripts": [{
     "run_at": "document_end",
     "matches": ["<all_urls>"],
