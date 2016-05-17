@@ -30,7 +30,7 @@ function handleSelectionChange (e) {
         for (var i = 0; i < allTextNodes.length; i++) {
             currentTextNode = allTextNodes[i];
             parentNodeName = currentTextNode.parentNode.nodeName;
-            if (parentNodeName !== "SCRIPT" && parentNodeName !== "STYLE") {
+            if (parentNodeName !== "SCRIPT" && parentNodeName !== "STYLE" && parentNodeName !== "HEAD") {
                 if (match = currentTextNode.data.match(regex)) {
                     var isolatedTextNode = currentTextNode.splitText(match.index); // remove preceding
                         allTextNodes.push(isolatedTextNode.splitText(selectionString.length)); // remove & save trailing
