@@ -11,17 +11,19 @@ function handleSelectionChange (e) {
     var selection = window.getSelection(),
         selectionString = (selection + "").trim(); // same as .toString()
 
-    if (selectionString === "" || selectionString === " ") {
-        return; // empty selection
+    var allTextNodes = getAllTextNodes(document.body),
+        currentTextNode,
+        match,
+        regexString = selectionString.replace("!@#$%^&.*]",""),
+        regex = new RegExp(regexString);
+
+    if (regexString.length < 3) {
+        return; // short selection
     } else if (selection.anchorNode !== selection.focusNode) {
         return; // selection crosses textNodes
     } else if (selection.type === "None") {
         return;
     }
-    var allTextNodes = getAllTextNodes(document.body),
-        currentTextNode,
-        match,
-        regex = new RegExp(selectionString);
 
     requestAnimationFrame(debounce(function () {
         document.removeEventListener("selectionchange", handleSelectionChange);
