@@ -6,17 +6,10 @@ var highlightedSpanTemplate = document.createElement("span");
     highlightedSpanTemplate.style.backgroundColor = "yellow";
 
 function handleSelectionChange () {
-    var debouncer = debounce(function () {
-        document.removeEventListener("selectionchange", debouncer);
-        document.addEventListener("selectionchange", handleSelectionChange);
-    }, 0);
-
-    document.removeEventListener("selectionchange", handleSelectionChange);
-    document.addEventListener("selectionchange", debouncer);
-    setTimeout(debouncer, 0);
-
+    preventStackOverflow();
     removeAllHighlights();
 
+    // assign and verify selection
     var selection = window.getSelection(),
         selectionString = (selection + "").trim();
 
@@ -24,12 +17,12 @@ function handleSelectionChange () {
         selection.type === "None" ||
         selection.type === "Caret") {
         return;
-    } 
+    }
 
+    // validate all textNodes; check for and highlight matches
     var allTextNodes = getAllTextNodes(document.body);
 
-    matchTextNodes:
-    for (var i = 0; i < allTextNodes.length; i++) {
+    matchTextNodes: for (var i = 0; i < allTextNodes.length; i++) {
 
         var fullTextNode = allTextNodes[i],
             matchIndex = fullTextNode.data.indexOf(selectionString),
@@ -57,23 +50,36 @@ function handleSelectionChange () {
             if ((selection.anchorNode !== fullTextNode || selection.anchorOffset !== matchIndex) &&
                 (selection.focusNode !== fullTextNode || selection.focusOffset !== matchIndex)) {
 
-                // remove preceding
+                // remove preceding text
                 isolatedTextNode = fullTextNode.splitText(matchIndex);
-                // remove & save trailing
+                // remove & queue trailing text
                 allTextNodes.push(isolatedTextNode.splitText(selectionString.length));
 
+                // wrap cloned text in cloned wrapper
                 var clonedStyledSpan = highlightedSpanTemplate.cloneNode(true);
                     clonedStyledSpan.appendChild(isolatedTextNode.cloneNode(true));
 
+                // replace existing text with cloned, wrapped text
                 isolatedTextNode.parentNode.insertBefore(clonedStyledSpan, isolatedTextNode);
                 isolatedTextNode.parentNode.removeChild(isolatedTextNode);
 
             } else {
-                console.log("excluded selection");
+                // queue text occuring after the selection
                 allTextNodes.push(fullTextNode.splitText(matchIndex + selectionString.length));
             }
         }
     }
+}
+
+function preventStackOverflow () {
+    var debouncer = debounce(function () {
+        document.removeEventListener("selectionchange", debouncer);
+        document.addEventListener("selectionchange", handleSelectionChange);
+    }, 0);
+
+    document.removeEventListener("selectionchange", handleSelectionChange);
+    document.addEventListener("selectionchange", debouncer);
+    setTimeout(debouncer, 0);
 }
 
 function removeAllHighlights () {
