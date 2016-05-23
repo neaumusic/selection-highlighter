@@ -16,11 +16,10 @@ function handleSelectionChange (e) {
     if (selectionString.length < 3) {
         return; // short selection
     } else if (selection.anchorNode !== selection.focusNode) {
-        return; // selection crosses textNodes
+        // return; // selection crosses textNodes
     } else if (selection.type === "None") {
         return;
     }
-
 
     var allTextNodes = getAllTextNodes(document.body);
 
@@ -30,18 +29,16 @@ function handleSelectionChange (e) {
         isolatedTextNode,
         latest;
 
-
     document.removeEventListener("selectionchange", handleSelectionChange);
     latest = requestAnimationFrame(debounce(function () {
         loop1: for (var i = 0; i < allTextNodes.length; i++) {
             currentTextNode = allTextNodes[i];
-            parentNodeName = currentTextNode.parentNode.nodeName;
+            parentNodeName = currentTextNode.parentNode && currentTextNode.parentNode.nodeName;
             if (parentNodeName !== "SCRIPT" && parentNodeName !== "STYLE" && parentNodeName !== "HEAD") {
                 if ((matchIndex = currentTextNode.data.indexOf(selectionString)) !== -1) {
                     var ancestor = currentTextNode.parentNode;
                     while (ancestor) {
-                        if (ancestor.nodeType === "INPUT" || ancestor.nodeType === "TEXTAREA" || ancestor.contentEditable === "true") {
-                            console.log("continuing:");
+                        if (ancestor.nodeName === "INPUT" || ancestor.nodeName === "TEXTAREA" || ancestor.contentEditable === "true") {
                             continue loop1;
                         } else {
                             if (ancestor.parentNode) {
@@ -64,13 +61,13 @@ function handleSelectionChange (e) {
                         isolatedTextNode.parentNode.insertBefore(clonedStyledSpan, isolatedTextNode);
                         isolatedTextNode.parentNode.removeChild(isolatedTextNode);
                     } else {
-                        console.log("not wrapping");
+                        allTextNodes.push(currentTextNode.splitText(matchIndex + selectionString.length));
                     }
                 }
             }
         }
         document.addEventListener("selectionchange", handleSelectionChange);
-    }, 300));
+    }, 30));
 
 }
 
