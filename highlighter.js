@@ -6,7 +6,10 @@ var highlightedSpanTemplate = document.createElement("span");
     highlightedSpanTemplate.style.backgroundColor = "yellow";
 
 function handleSelectionChange () {
-    preventStackOverflow();
+    // don't listen until execution finishes
+    debounce();
+
+    // unwrap any pre-existing text
     removeAllHighlights();
 
     // assign and verify selection
@@ -71,17 +74,6 @@ function handleSelectionChange () {
     }
 }
 
-function preventStackOverflow () {
-    var debouncer = debounce(function () {
-        document.removeEventListener("selectionchange", debouncer);
-        document.addEventListener("selectionchange", handleSelectionChange);
-    }, 0);
-
-    document.removeEventListener("selectionchange", handleSelectionChange);
-    document.addEventListener("selectionchange", debouncer);
-    setTimeout(debouncer, 0);
-}
-
 function removeAllHighlights () {
     var elements = document.querySelectorAll(".highlighted_selection");
     for (var i = 0; i < elements.length; i++) {
@@ -101,17 +93,9 @@ function getAllTextNodes (rootNode) {
     return allTextNodes;
 } // credit http://stackoverflow.com/a/10730777/1487102
 
-function debounce (func, wait, immediate) {
-    var timeout;
-    return function () {
-        var context = this, args = arguments;
-        var later = function() {
-            timeout = null;
-            if (!immediate) func.apply(context, args);
-        };
-        var callNow = immediate && !timeout;
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-        if (callNow) func.apply(context, args);
-    };
-} // credit to underscore.js
+function debounce () {
+    document.removeEventListener("selectionchange", handleSelectionChange);
+    setTimeout(function () {
+        document.addEventListener("selectionchange", handleSelectionChange);
+    }, 0);
+}
