@@ -1,74 +1,79 @@
 
+document.addEventListener("selectionchange", handleSelectionChange);
+
 var highlightedSpanTemplate = document.createElement("span");
     highlightedSpanTemplate.className = "highlighted_selection";
     highlightedSpanTemplate.style.backgroundColor = "yellow";
 
-document.addEventListener("selectionchange", handleSelectionChange);
+function handleSelectionChange () {
+    var debouncer = debounce(function () {
+        document.removeEventListener("selectionchange", debouncer);
+        document.addEventListener("selectionchange", handleSelectionChange);
+    }, 0);
 
-function handleSelectionChange (e) {
+    document.removeEventListener("selectionchange", handleSelectionChange);
+    document.addEventListener("selectionchange", debouncer);
+    setTimeout(debouncer, 0);
+
     removeAllHighlights();
 
     var selection = window.getSelection(),
-        selectionString = (selection + "").trim(); // same as .toString()
+        selectionString = (selection + "").trim();
 
-    console.log("selection:",selection);
-
-    if (selectionString.length < 3) {
-        return; // short selection
-    } else if (selection.anchorNode !== selection.focusNode) {
-        // return; // selection crosses textNodes
-    } else if (selection.type === "None") {
+    if (selectionString.length < 3 ||
+        selection.type === "None" ||
+        selection.type === "Caret") {
         return;
-    }
+    } 
 
     var allTextNodes = getAllTextNodes(document.body);
 
-    var currentTextNode,
-        parentNodeName,
-        matchIndex,
-        isolatedTextNode,
-        latest;
+    matchTextNodes:
+    for (var i = 0; i < allTextNodes.length; i++) {
 
-    document.removeEventListener("selectionchange", handleSelectionChange);
-    latest = requestAnimationFrame(debounce(function () {
-        loop1: for (var i = 0; i < allTextNodes.length; i++) {
-            currentTextNode = allTextNodes[i];
-            parentNodeName = currentTextNode.parentNode && currentTextNode.parentNode.nodeName;
-            if (parentNodeName !== "SCRIPT" && parentNodeName !== "STYLE" && parentNodeName !== "HEAD") {
-                if ((matchIndex = currentTextNode.data.indexOf(selectionString)) !== -1) {
-                    var ancestor = currentTextNode.parentNode;
-                    while (ancestor) {
-                        if (ancestor.nodeName === "INPUT" || ancestor.nodeName === "TEXTAREA" || ancestor.contentEditable === "true") {
-                            continue loop1;
-                        } else {
-                            if (ancestor.parentNode) {
-                                ancestor = ancestor.parentNode;
-                            } else {
-                                break;
-                            }
-                        }
-                    }
+        var fullTextNode = allTextNodes[i],
+            matchIndex = fullTextNode.data.indexOf(selectionString),
+            ancestor = fullTextNode.parentNode;
 
-                    if ((selection.anchorNode !== currentTextNode || selection.anchorOffset !== matchIndex) &&
-                        (selection.focusNode !== currentTextNode || selection.focusOffset !== matchIndex)) {
+        if (matchIndex !== -1) {
 
-                        isolatedTextNode = currentTextNode.splitText(matchIndex); // remove preceding
-                        allTextNodes.push(isolatedTextNode.splitText(selectionString.length)); // remove & save trailing
+            // check bad ancestor environments
+            while (ancestor) {
+                if (ancestor.nodeName === "SCRIPT" ||
+                    ancestor.nodeName === "STYLE" ||
+                    ancestor.nodeName === "HEAD" ||
+                    ancestor.nodeName === "INPUT" ||
+                    ancestor.nodeName === "TEXTAREA" ||
+                    ancestor.contentEditable === "true") {
+                    console.log("continue");
+                    continue matchTextNodes;
 
-                        var clonedStyledSpan = highlightedSpanTemplate.cloneNode(true);
-                            clonedStyledSpan.appendChild(isolatedTextNode.cloneNode(true));
-
-                        isolatedTextNode.parentNode.insertBefore(clonedStyledSpan, isolatedTextNode);
-                        isolatedTextNode.parentNode.removeChild(isolatedTextNode);
-                    } else {
-                        allTextNodes.push(currentTextNode.splitText(matchIndex + selectionString.length));
-                    }
+                } else {
+                    ancestor = ancestor.parentNode;
                 }
             }
-        }
-        document.addEventListener("selectionchange", handleSelectionChange);
-    }, 30));
 
+            // don't wrap the text under current selection
+            if ((selection.anchorNode !== fullTextNode || selection.anchorOffset !== matchIndex) &&
+                (selection.focusNode !== fullTextNode || selection.focusOffset !== matchIndex)) {
+
+                // remove preceding
+                isolatedTextNode = fullTextNode.splitText(matchIndex);
+                // remove & save trailing
+                allTextNodes.push(isolatedTextNode.splitText(selectionString.length));
+
+                var clonedStyledSpan = highlightedSpanTemplate.cloneNode(true);
+                    clonedStyledSpan.appendChild(isolatedTextNode.cloneNode(true));
+
+                isolatedTextNode.parentNode.insertBefore(clonedStyledSpan, isolatedTextNode);
+                isolatedTextNode.parentNode.removeChild(isolatedTextNode);
+
+            } else {
+                console.log("excluded selection");
+                allTextNodes.push(fullTextNode.splitText(matchIndex + selectionString.length));
+            }
+        }
+    }
 }
 
 function removeAllHighlights () {
