@@ -67,6 +67,10 @@ function handleSelectionChange () {
             } else {
                 // queue text occuring after the selection
                 allTextNodes.push(fullTextNode.splitText(matchIndex + selectionString.length));
+                // ensure user can copy selection.. as visually indicated..
+                var range = selection.getRangeAt(0).cloneRange();
+                selection.removeAllRanges();
+                selection.addRange(range);
             }
         }
     }
