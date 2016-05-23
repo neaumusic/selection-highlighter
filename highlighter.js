@@ -11,9 +11,7 @@ function handleSelectionChange (e) {
     var selection = window.getSelection(),
         selectionString = (selection + "").trim(); // same as .toString()
 
-    var allTextNodes = getAllTextNodes(document.body),
-        currentTextNode,
-        matchIndex;
+    console.log("selection:",selection);
 
     if (selectionString.length < 3) {
         return; // short selection
@@ -23,31 +21,57 @@ function handleSelectionChange (e) {
         return;
     }
 
-    requestAnimationFrame(debounce(function () {
-        document.removeEventListener("selectionchange", handleSelectionChange);
-        for (var i = 0; i < allTextNodes.length; i++) {
+
+    var allTextNodes = getAllTextNodes(document.body);
+
+    var currentTextNode,
+        parentNodeName,
+        matchIndex,
+        isolatedTextNode,
+        latest;
+
+
+    document.removeEventListener("selectionchange", handleSelectionChange);
+    latest = requestAnimationFrame(debounce(function () {
+        loop1: for (var i = 0; i < allTextNodes.length; i++) {
             currentTextNode = allTextNodes[i];
             parentNodeName = currentTextNode.parentNode.nodeName;
             if (parentNodeName !== "SCRIPT" && parentNodeName !== "STYLE" && parentNodeName !== "HEAD") {
                 if ((matchIndex = currentTextNode.data.indexOf(selectionString)) !== -1) {
-                    var isolatedTextNode = currentTextNode.splitText(matchIndex); // remove preceding
-                        allTextNodes.push(isolatedTextNode.splitText(selectionString.length)); // remove & save trailing
+                    var ancestor = currentTextNode.parentNode;
+                    while (ancestor) {
+                        if (ancestor.nodeType === "INPUT" || ancestor.nodeType === "TEXTAREA" || ancestor.contentEditable === "true") {
+                            console.log("continuing:");
+                            continue loop1;
+                        } else {
+                            if (ancestor.parentNode) {
+                                ancestor = ancestor.parentNode;
+                            } else {
+                                break;
+                            }
+                        }
+                    }
+
                     if ((selection.anchorNode !== currentTextNode || selection.anchorOffset !== matchIndex) &&
                         (selection.focusNode !== currentTextNode || selection.focusOffset !== matchIndex)) {
+
+                        isolatedTextNode = currentTextNode.splitText(matchIndex); // remove preceding
+                        allTextNodes.push(isolatedTextNode.splitText(selectionString.length)); // remove & save trailing
 
                         var clonedStyledSpan = highlightedSpanTemplate.cloneNode(true);
                             clonedStyledSpan.appendChild(isolatedTextNode.cloneNode(true));
 
                         isolatedTextNode.parentNode.insertBefore(clonedStyledSpan, isolatedTextNode);
                         isolatedTextNode.parentNode.removeChild(isolatedTextNode);
+                    } else {
+                        console.log("not wrapping");
                     }
                 }
             }
         }
-        setTimeout(function () {
-            document.addEventListener("selectionchange", handleSelectionChange);
-        }, 0);
-    }), 300);
+        document.addEventListener("selectionchange", handleSelectionChange);
+    }, 300));
+
 }
 
 function removeAllHighlights () {
