@@ -1,9 +1,10 @@
 
 document.addEventListener("selectionchange", handleSelectionChange);
 
-var highlightedSpanTemplate = document.createElement("span");
+var highlightedSpanTemplate = document.createElement("div");
     highlightedSpanTemplate.className = "highlighted_selection";
     highlightedSpanTemplate.style.backgroundColor = "yellow";
+    highlightedSpanTemplate.style.display = "inline-block";
 
 function handleSelectionChange () {
     // don't listen until execution finishes
@@ -26,13 +27,11 @@ function handleSelectionChange () {
     var allTextNodes = getAllTextNodes(document.body);
 
     matchTextNodes: for (var i = 0; i < allTextNodes.length; i++) {
-
         var fullTextNode = allTextNodes[i],
             matchIndex = fullTextNode.data.indexOf(selectionString),
             ancestor = fullTextNode.parentNode;
 
         if (matchIndex !== -1) {
-
             // check bad ancestor environments
             while (ancestor) {
                 if (ancestor.nodeName === "SCRIPT" ||
@@ -41,9 +40,8 @@ function handleSelectionChange () {
                     ancestor.nodeName === "INPUT" ||
                     ancestor.nodeName === "TEXTAREA" ||
                     ancestor.contentEditable === "true") {
-                    console.log("continue");
-                    continue matchTextNodes;
 
+                    continue matchTextNodes;
                 } else {
                     ancestor = ancestor.parentNode;
                 }
