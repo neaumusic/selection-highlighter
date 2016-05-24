@@ -78,10 +78,10 @@ function handleSelectionChange () {
                 isolatedTextNode.parentNode.removeChild(isolatedTextNode);
 
             } else {
-                // queue text occuring after the selection
-                allTextNodes.push(fullTextNode.splitText(matchIndex + selectionString.length));
                 // ensure user can copy selection.. as visually indicated..
                 if (!isMouseDown) {
+                    // queue text occuring after the selection
+                    allTextNodes.push(fullTextNode.splitText(matchIndex + selectionString.length));
                     var range = selection.getRangeAt(0),
                         anchorNode = selection.anchorNode,
                         anchorOffset = selection.anchorOffset,
