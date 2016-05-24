@@ -1,13 +1,23 @@
 
 document.addEventListener("selectionchange", handleSelectionChange);
 
+// ensure that selection isn't lost while mouse is down
+var isMouseDown = false;
+document.addEventListener("mousedown", function () {
+    isMouseDown = true;
+});
+document.addEventListener("mouseup", function () {
+    isMouseDown = false;
+    handleSelectionChange();
+});
+
 var highlightedSpanTemplate = document.createElement("div");
     highlightedSpanTemplate.className = "highlighted_selection";
     highlightedSpanTemplate.style.backgroundColor = "yellow";
-    highlightedSpanTemplate.style.display = "inline-block";
+    highlightedSpanTemplate.style.display = "inline";
 
 function handleSelectionChange () {
-    // don't listen until execution finishes
+    // remove listener until execution finishes
     debounce();
 
     // unwrap any pre-existing text
@@ -15,18 +25,20 @@ function handleSelectionChange () {
 
     // assign and verify selection
     var selection = window.getSelection(),
-        selectionString = (selection + "").trim();
+        selectionString = (selection + "");
 
     if (selectionString.length < 3 ||
         selection.type === "None" ||
         selection.type === "Caret") {
+
         return;
     }
 
-    // validate all textNodes; check for and highlight matches
+    // get all textNodes
     var allTextNodes = getAllTextNodes(document.body);
-
+    // validate and highlight matches
     matchTextNodes: for (var i = 0; i < allTextNodes.length; i++) {
+
         var fullTextNode = allTextNodes[i],
             matchIndex = fullTextNode.data.indexOf(selectionString),
             ancestor = fullTextNode.parentNode;
@@ -42,12 +54,13 @@ function handleSelectionChange () {
                     ancestor.contentEditable === "true") {
 
                     continue matchTextNodes;
+
                 } else {
                     ancestor = ancestor.parentNode;
                 }
             }
 
-            // don't wrap the text under current selection
+            // don't wrap text under the current selection
             if ((selection.anchorNode !== fullTextNode || selection.anchorOffset !== matchIndex) &&
                 (selection.focusNode !== fullTextNode || selection.focusOffset !== matchIndex)) {
 
@@ -68,9 +81,24 @@ function handleSelectionChange () {
                 // queue text occuring after the selection
                 allTextNodes.push(fullTextNode.splitText(matchIndex + selectionString.length));
                 // ensure user can copy selection.. as visually indicated..
-                var range = selection.getRangeAt(0).cloneRange();
-                selection.removeAllRanges();
-                selection.addRange(range);
+                if (!isMouseDown) {
+                    var range = selection.getRangeAt(0),
+                        anchorNode = selection.anchorNode,
+                        anchorOffset = selection.anchorOffset,
+                        focusNode = selection.focusNode,
+                        focusOffset = selection.focusOffset;
+
+                    selection.removeAllRanges();
+
+                    if (focusOffset < anchorOffset) {
+                        range.setStart(anchorNode, anchorOffset);
+                        selection.addRange(range);
+                        selection.extend(focusNode, focusOffset);
+                    } else {
+                        selection.addRange(range);
+                        selection.extend(focusNode, focusOffset);
+                    }
+                }
             }
         }
     }
@@ -99,5 +127,5 @@ function debounce () {
     document.removeEventListener("selectionchange", handleSelectionChange);
     setTimeout(function () {
         document.addEventListener("selectionchange", handleSelectionChange);
-    }, 0);
+    }, 30);
 }
