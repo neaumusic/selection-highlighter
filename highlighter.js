@@ -127,5 +127,5 @@ function debounce () {
     document.removeEventListener("selectionchange", handleSelectionChange);
     setTimeout(function () {
         document.addEventListener("selectionchange", handleSelectionChange);
-    }, 30);
+    }, 200); // longer time neccessary when searching extremely long documents
 }
