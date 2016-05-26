@@ -29,7 +29,8 @@ function handleSelectionChange () {
 
     if (selectionString.length < 3 ||
         selection.type === "None" ||
-        selection.type === "Caret") {
+        selection.type === "Caret" ||
+        isMouseDown) {
 
         return;
     }
@@ -78,26 +79,23 @@ function handleSelectionChange () {
                 isolatedTextNode.parentNode.removeChild(isolatedTextNode);
 
             } else {
-                // ensure user can copy selection.. as visually indicated..
-                if (!isMouseDown) {
-                    // queue text occuring after the selection
-                    allTextNodes.push(fullTextNode.splitText(matchIndex + selectionString.length));
-                    var range = selection.getRangeAt(0),
-                        anchorNode = selection.anchorNode,
-                        anchorOffset = selection.anchorOffset,
-                        focusNode = selection.focusNode,
-                        focusOffset = selection.focusOffset;
+                // queue text occuring after the selection
+                allTextNodes.push(fullTextNode.splitText(matchIndex + selectionString.length));
+                var range = selection.getRangeAt(0),
+                    anchorNode = selection.anchorNode,
+                    anchorOffset = selection.anchorOffset,
+                    focusNode = selection.focusNode,
+                    focusOffset = selection.focusOffset;
 
-                    selection.removeAllRanges();
+                selection.removeAllRanges();
 
-                    if (focusOffset < anchorOffset) {
-                        range.setStart(anchorNode, anchorOffset);
-                        selection.addRange(range);
-                        selection.extend(focusNode, focusOffset);
-                    } else {
-                        selection.addRange(range);
-                        selection.extend(focusNode, focusOffset);
-                    }
+                if (focusOffset < anchorOffset) {
+                    range.setStart(anchorNode, anchorOffset);
+                    selection.addRange(range);
+                    selection.extend(focusNode, focusOffset);
+                } else {
+                    selection.addRange(range);
+                    selection.extend(focusNode, focusOffset);
                 }
             }
         }
@@ -127,5 +125,5 @@ function debounce () {
     document.removeEventListener("selectionchange", handleSelectionChange);
     setTimeout(function () {
         document.addEventListener("selectionchange", handleSelectionChange);
-    }, 200); // longer time neccessary when searching extremely long documents
+    }, 30);
 }
