@@ -6,6 +6,8 @@ var isMouseDown = false;
 document.addEventListener("mousedown", function () {
     isMouseDown = true;
 });
+
+// ensure we always run a scan on mouseup
 document.addEventListener("mouseup", function () {
     isMouseDown = false;
     handleSelectionChange();
@@ -17,7 +19,7 @@ var highlightedSpanTemplate = document.createElement("div");
     highlightedSpanTemplate.style.display = "inline";
 
 function handleSelectionChange () {
-    // remove listener until execution finishes
+    // remove drag listener until execution finishes
     debounce();
 
     // unwrap any pre-existing text
