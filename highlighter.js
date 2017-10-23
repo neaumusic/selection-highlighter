@@ -1,131 +1,97 @@
+const highlightedSpanTemplate = document.createElement('div');
+      highlightedSpanTemplate.className = 'highlighted_selection';
 
-document.addEventListener("selectionchange", handleSelectionChange);
+const styles = document.createElement('style');
+styles.type = 'text/css';
+styles.appendChild(document.createTextNode(`
+  .highlighted_selection { display: inline; background-color: yellow; }
+`));
+document.head.appendChild(styles);
 
-// ensure that selection isn't lost while mouse is down
-var isMouseDown = false;
-document.addEventListener("mousedown", function () {
-    isMouseDown = true;
-});
+document.addEventListener('selectionchange', onSelectionChange);
 
-// ensure we always run a scan on mouseup
-document.addEventListener("mouseup", function () {
-    isMouseDown = false;
-    handleSelectionChange();
-});
+function onSelectionChange (e) {
+  // ------------------------------------------------------
+  //  remove existing
+  // ------------------------------------------------------
+  document.querySelectorAll('.highlighted_selection').forEach(element => {
+    element.parentNode.replaceChild(new Text(element.textContent || ''), element);
+  });
+  document.normalize();
 
-var highlightedSpanTemplate = document.createElement("div");
-    highlightedSpanTemplate.className = "highlighted_selection";
-    highlightedSpanTemplate.style.backgroundColor = "yellow";
-    highlightedSpanTemplate.style.display = "inline";
+  // ------------------------------------------------------
+  //  get selection and trim newline chars
+  // ------------------------------------------------------
+  const selection = document.getSelection();
+  const selectionString = (selection + '').trim();
 
-function handleSelectionChange () {
-    // remove drag listener until execution finishes
-    debounce();
+  // ------------------------------------------------------
+  //  validate selection
+  // ------------------------------------------------------
+  const isSelectionValid = (selectionString.length >= 3 && !/None|Caret/.exec(selection.type));
+  if (!isSelectionValid) return;
 
-    // unwrap any pre-existing text
-    removeAllHighlights();
+  // ------------------------------------------------------
+  //  get all text nodes
+  // ------------------------------------------------------
+  const allTextNodes = [];
+  const treeWalker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+  while (treeWalker.nextNode()) {
+    allTextNodes.push(treeWalker.currentNode);
+  }
 
-    // assign and verify selection
-    var selection = window.getSelection(),
-        selectionString = (selection + "");
+  // ------------------------------------------------------
+  //  match against all text nodes
+  // ------------------------------------------------------
+  for (let i = 0; i < allTextNodes.length; i++) {
+    const textNode = allTextNodes[i];
 
-    if (selectionString.length < 3 ||
-        selection.type === "None" ||
-        selection.type === "Caret" ||
-        isMouseDown) {
+    // return if no match
+    const matchIndex = textNode.data.indexOf(selectionString);
+    if (matchIndex === -1) continue;
 
-        return;
+    // validate ancestry
+    const hasValidAncestry = (
+      function isValidAncestor (ancestor) {
+        return (
+          (!ancestor) ||
+          (ancestor.nodeName !== 'SCRIPT') &&
+          (ancestor.nodeName !== 'STYLE') &&
+          (ancestor.nodeName !== 'HEAD') &&
+          (ancestor.nodeName !== 'INPUT') &&
+          (ancestor.nodeName !== 'TEXTAREA') &&
+          (ancestor.contentEditable !== 'true') &&
+          (isValidAncestor(ancestor.parentNode))
+        );
+      }
+    )(textNode.parentNode);
+    if (!hasValidAncestry) continue;
+
+    // don't mess wiht the users' actual selection
+    const isTextNodeSelected = (
+      (selection.anchorNode === textNode && selection.anchorOffset === matchIndex) ||
+      (selection.focusNode === textNode && selection.focusOffset === matchIndex)
+    );
+    if (isTextNodeSelected) {
+      allTextNodes.push(textNode.splitText(matchIndex + selectionString.length));
+      continue;
     }
 
-    // get all textNodes
-    var allTextNodes = getAllTextNodes(document.body);
-    // validate and highlight matches
-    matchTextNodes: for (var i = 0; i < allTextNodes.length; i++) {
-
-        var fullTextNode = allTextNodes[i],
-            matchIndex = fullTextNode.data.indexOf(selectionString),
-            ancestor = fullTextNode.parentNode;
-
-        if (matchIndex !== -1) {
-            // check bad ancestor environments
-            while (ancestor) {
-                if (ancestor.nodeName === "SCRIPT" ||
-                    ancestor.nodeName === "STYLE" ||
-                    ancestor.nodeName === "HEAD" ||
-                    ancestor.nodeName === "INPUT" ||
-                    ancestor.nodeName === "TEXTAREA" ||
-                    ancestor.contentEditable === "true") {
-
-                    continue matchTextNodes;
-
-                } else {
-                    ancestor = ancestor.parentNode;
-                }
-            }
-
-            // don't wrap text under the current selection
-            if ((selection.anchorNode !== fullTextNode || selection.anchorOffset !== matchIndex) &&
-                (selection.focusNode !== fullTextNode || selection.focusOffset !== matchIndex)) {
-
-                // remove preceding text
-                isolatedTextNode = fullTextNode.splitText(matchIndex);
-                // remove & queue trailing text
-                allTextNodes.push(isolatedTextNode.splitText(selectionString.length));
-
-                // wrap cloned text in cloned wrapper
-                var clonedStyledSpan = highlightedSpanTemplate.cloneNode(true);
-                    clonedStyledSpan.appendChild(isolatedTextNode.cloneNode(true));
-
-                // replace existing text with cloned, wrapped text
-                isolatedTextNode.parentNode.insertBefore(clonedStyledSpan, isolatedTextNode);
-                isolatedTextNode.parentNode.removeChild(isolatedTextNode);
-
-            } else {
-                // queue text occuring after the selection
-                allTextNodes.push(fullTextNode.splitText(matchIndex + selectionString.length));
-                var range = selection.getRangeAt(0),
-                    anchorNode = selection.anchorNode,
-                    anchorOffset = selection.anchorOffset,
-                    focusNode = selection.focusNode,
-                    focusOffset = selection.focusOffset;
-
-                selection.removeAllRanges();
-
-                if (focusOffset < anchorOffset) {
-                    range.setStart(anchorNode, anchorOffset);
-                    selection.addRange(range);
-                    selection.extend(focusNode, focusOffset);
-                } else {
-                    selection.addRange(range);
-                    selection.extend(focusNode, focusOffset);
-                }
-            }
-        }
+    // remove excess pre-text and re-queue remaining text
+    if (matchIndex !== 0) {
+      allTextNodes.push(textNode.splitText(matchIndex));
+      continue;
     }
-}
 
-function removeAllHighlights () {
-    var elements = document.querySelectorAll(".highlighted_selection");
-    for (var i = 0; i < elements.length; i++) {
-        elements[i].parentNode.insertBefore(new Text(elements[i].textContent || ""), elements[i]);
-        elements[i].parentNode.removeChild(elements[i]);
+    // wrap the match and re-queue the remaining text
+    if (matchIndex === 0) {
+      const remaining = textNode.splitText(selectionString.length);
+      allTextNodes.push(remaining);
+      const highlightedNode = highlightedSpanTemplate.cloneNode(true);
+            highlightedNode.appendChild(textNode.cloneNode(true));
+      textNode.parentNode.replaceChild(highlightedNode, textNode);
     }
-    document.normalize();
-}
+  }
 
-function getAllTextNodes (rootNode) {
-    var currentNode, allTextNodes = [],
-        filteredTreeWalker = document.createTreeWalker(rootNode, NodeFilter.SHOW_TEXT, null, false);
-
-    while (currentNode = filteredTreeWalker.nextNode())
-        allTextNodes.push(currentNode);
-
-    return allTextNodes;
-} // credit http://stackoverflow.com/a/10730777/1487102
-
-function debounce () {
-    document.removeEventListener("selectionchange", handleSelectionChange);
-    setTimeout(function () {
-        document.addEventListener("selectionchange", handleSelectionChange);
-    }, 30);
-}
+  document.normalize();
+};

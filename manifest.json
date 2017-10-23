@@ -1,0 +1,14 @@
+{
+  "manifest_version": 2,
+  "name": "Selection Highlighter",
+  "version": "2.12",
+  "description": "Passively highlights occurrences of selected text. Maintains current text selection.",
+  "content_scripts": [{
+    "run_at": "document_end",
+    "matches": ["<all_urls>"],
+    "js": ["highlighter.js"]
+  }],
+  "permissions": [
+    "tabs", "<all_urls>"
+  ]
+}
