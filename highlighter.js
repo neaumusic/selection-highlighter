@@ -23,7 +23,19 @@ function onSelectionChange (e) {
   //  get selection and trim newline chars
   // ------------------------------------------------------
   const selection = document.getSelection();
-  const selectionString = (selection + '').trim();
+  const match = (selection + '').match(/^(\s*)(\S+(?:\s+\S+)*)(\s*)$/);
+  // console.log(selection + '');
+  if (!match) return;
+  const leadingSpaces = match[1];
+  const selectionString = match[2];
+  const trailingSpaces = match[3];
+  // console.log(
+  //   'full match:',match,
+  //   'lengths:',leadingSpaces.length, selectionString.length, trailingSpaces.length,
+  //   'comparison:',selection.anchorNode.compareDocumentPosition(selection.focusNode),
+  //   'anchorOffset:', selection.anchorOffset, 'anchorNode:', selection.anchorNode,
+  //   'focusOffset:', selection.focusOffset, 'focusNode:',selection.focusNode
+  // );
 
   // ------------------------------------------------------
   //  validate selection
@@ -67,11 +79,55 @@ function onSelectionChange (e) {
     )(textNode.parentNode);
     if (!hasValidAncestry) continue;
 
-    // don't mess wiht the users' actual selection
+    // don't mess with the users' actual selection
+    const position = selection.anchorNode.compareDocumentPosition(selection.focusNode);
+    // console.log('textNode',textNode);
     const isTextNodeSelected = (
-      (selection.anchorNode === textNode && selection.anchorOffset === matchIndex) ||
-      (selection.focusNode === textNode && selection.focusOffset === matchIndex)
+      (position & Node.DOCUMENT_POSITION_FOLLOWING) ? (
+        (textNode === selection.anchorNode && (
+          selection.anchorNode.nodeType === Node.ELEMENT_NODE && selection.anchorOffset === 0 ||
+          selection.anchorOffset === matchIndex - leadingSpaces.length
+        )) || (textNode === selection.focusNode && (
+          selection.focusNode.nodeType === Node.ELEMENT_NODE && selection.focusOffset === 0 ||
+          selection.focusOffset === matchIndex + selectionString.length + trailingSpaces.length
+        )) || (
+          (textNode !== selection.anchorNode && textNode !== selection.focusNode) && (
+            selection.anchorNode.compareDocumentPosition(textNode) & Node.DOCUMENT_POSITION_FOLLOWING &&
+            selection.focusNode.compareDocumentPosition(textNode) & Node.DOCUMENT_POSITION_PRECEDING
+          )
+        )
+      ) : (position & Node.DOCUMENT_POSITION_PRECEDING) ? (
+        // offsets are 0 if directly straddling
+        (textNode === selection.anchorNode && (
+          selection.anchorNode.nodeType === Node.ELEMENT_NODE && selection.anchorOffset === 0 ||
+          selection.anchorNode.nodeType === Node.TEXT_NODE && selection.anchorOffset === matchIndex + selectionString.length + trailingSpaces.length
+        )) || (textNode === selection.focusNode && (
+          selection.focusNode.nodeType === Node.ELEMENT_NODE && selection.focusOffset === 0 ||
+          selection.focusOffset === matchIndex - leadingSpaces.length
+        )) || (
+          (textNode !== selection.anchorNode && textNode !== selection.focusNode) && (
+            selection.anchorNode.compareDocumentPosition(textNode) & Node.DOCUMENT_POSITION_PRECEDING &&
+            selection.focusNode.compareDocumentPosition(textNode) & Node.DOCUMENT_POSITION_FOLLOWING
+          )
+        )
+      ) : (
+        (selection.anchorOffset < selection.focusOffset) && (
+          (textNode === selection.anchorNode && (
+            selection.anchorOffset === matchIndex - leadingSpaces.length
+          ))
+        ) || (selection.anchorOffset > selection.focusOffset) && (
+          (textNode === selection.focusNode && (
+            selection.focusOffset === matchIndex - leadingSpaces.length
+          ))
+        )
+      )
     );
+    // console.log('anchor to textnode comparison',selection.anchorNode.compareDocumentPosition(textNode))
+    // console.log('textNode === selection.anchorNode:', textNode === selection.anchorNode,
+    //   'anchorOffset',selection.anchorOffset, 'matchIndex',matchIndex,'leadingSpaces',leadingSpaces.length
+    // );
+    // console.log('is user\'s selection?', isTextNodeSelected);
+
     if (isTextNodeSelected) {
       allTextNodes.push(textNode.splitText(matchIndex + selectionString.length));
       continue;
