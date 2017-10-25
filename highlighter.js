@@ -15,9 +15,12 @@ function onSelectionChange (e) {
   //  remove existing
   // ------------------------------------------------------
   document.querySelectorAll('.highlighted_selection').forEach(element => {
-    element.parentNode.replaceChild(new Text(element.textContent || ''), element);
+    const parent = element.parentNode;
+    if (parent) {
+      parent.replaceChild(new Text(element.textContent || ''), element);
+      parent.normalize();
+    }
   });
-  document.normalize();
 
   // ------------------------------------------------------
   //  get selection and trim newline chars
@@ -145,9 +148,11 @@ function onSelectionChange (e) {
       allTextNodes.push(remaining);
       const highlightedNode = highlightedSpanTemplate.cloneNode(true);
             highlightedNode.appendChild(textNode.cloneNode(true));
-      textNode.parentNode.replaceChild(highlightedNode, textNode);
+      const parent = textNode.parentNode;
+      if (parent) {
+        parent.replaceChild(highlightedNode, textNode);
+        parent.normalize();
+      }
     }
   }
-
-  document.normalize();
 };
