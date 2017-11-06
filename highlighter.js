@@ -145,7 +145,6 @@ function initialize () {
         const parent = textNode.parentNode;
         if (parent) {
           parent.replaceChild(highlightedNode, textNode);
-          parent.normalize();
         }
       }
     }

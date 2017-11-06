@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Selection Highlighter",
-  "version": "2.15",
+  "version": "2.16",
   "description": "Passively highlights occurrences of selected text. Maintains current text selection.",
   "options_page": "options.html",
   "content_scripts": [{
