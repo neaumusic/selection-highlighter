@@ -12,6 +12,10 @@ const options = ({
     // eg. return (windowLocation.host.includes('linkedin.com') === false);
     return true;
   },
+  areGateKeysPressed: function (pressedKeys = []) {
+    // eg. return (pressedKeys.indexOf('Meta') !== -1) && (pressedKeys.indexOf('Alt') !== -1);
+    return true;
+  },
   isAncestorNodeValid: (
     function isAncestorNodeValid (ancestorNode) {
       return (
@@ -43,17 +47,36 @@ chrome.storage.sync.get('optionsText', e => {
 });
 
 function initialize () {
-  if (!options.isWindowLocationValid(window.location)) return;
-
   const highlightedSpanTemplate = document.createElement('div');
     highlightedSpanTemplate.className = options.highlightedClassName;
   Object.entries(options.styles).forEach(([styleName, styleValue]) => {
     highlightedSpanTemplate.style[styleName] = styleValue;
   });
 
+  const pressedKeys = [];
+  document.addEventListener('keydown', e => {
+    const index = pressedKeys.indexOf(e.key);
+    if (index === -1) {
+      pressedKeys.push(e.key);
+    }
+  });
+  document.addEventListener('keyup', e => {
+    const index = pressedKeys.indexOf(e.key);
+    if (index !== -1) {
+      pressedKeys.splice(index, 1);
+    }
+  });
+
   document.addEventListener('selectionchange', onSelectionChange);
 
   function onSelectionChange (e) {
+    if (!options.isWindowLocationValid(window.location)) return;
+
+    if (!options.areGateKeysPressed(pressedKeys)) return;
+
+    // ------------------------------------------------------
+    //  remove existing highlights
+    // ------------------------------------------------------
     document.querySelectorAll('.' + options.highlightedClassName).forEach(element => {
       const parent = element.parentNode;
       if (parent) {
@@ -63,7 +86,6 @@ function initialize () {
     });
 
     const selection = document.getSelection();
-
     const match = (selection + '').match(/^(\s*)(\S+(?:\s+\S+)*)(\s*)$/);
     if (!match) return;
     const leadingSpaces = match[1];

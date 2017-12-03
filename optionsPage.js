@@ -12,6 +12,10 @@ const defaultOptions = `({
     // eg. return (windowLocation.host.includes('linkedin.com') === false);
     return true;
   },
+  areGateKeysPressed: function (pressedKeys = []) {
+    // eg. return (pressedKeys.indexOf('Meta') !== -1) && (pressedKeys.indexOf('Alt') !== -1);
+    return true;
+  },
   isAncestorNodeValid: (
     function isAncestorNodeValid (ancestorNode) {
       return (
@@ -29,7 +33,8 @@ const defaultOptions = `({
   ),
 })`;
 
-const optionsTextArea = document.querySelector('textarea#options')
+const optionsTextArea = document.querySelector('textarea#options-text');
+
 chrome.storage.sync.get('optionsText', e => {
   optionsTextArea.value = (e.optionsText || defaultOptions);
 });
@@ -39,7 +44,7 @@ document.querySelector('button#submit-button').addEventListener('click', e => {
 });
 
 document.querySelector('button#reset-button').addEventListener('click', e => {
-  if (window.confirm('Are you sure? Sorry for asking..')) {
+  if (window.confirm('Are you sure?')) {
     chrome.storage.sync.clear(() => window.location.reload());
   }
 });

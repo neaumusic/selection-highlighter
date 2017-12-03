@@ -9,12 +9,15 @@
         margin: 0;
         padding: 0;
       }
-      textarea#options {
+      textarea#options-text {
         position: relative;
         display: block;
         margin: 2rem auto;
-        width: 36rem;
+        width: 40rem;
         height: 36rem;
+        max-width: 100%;
+        white-space: nowrap;
+        font-size: 0.875rem;
       }
       button {
         position: relative;
@@ -24,9 +27,9 @@
     </style>
   </head>
   <body>
-    <textarea id='options'></textarea>
+    <textarea id='options-text'></textarea>
     <button id='submit-button'>Submit</button>
     <button id='reset-button'>Reset To Defaults</button>
   </body>
-  <script src='options.js'></script>
+  <script src='optionsPage.js'></script>
 </html>
