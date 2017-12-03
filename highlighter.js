@@ -13,7 +13,8 @@ const options = ({
     return true;
   },
   areKeysPressed: function (pressedKeys = []) {
-    // eg. return (pressedKeys.indexOf('Meta') !== -1) && (pressedKeys.indexOf('Alt') !== -1);
+    // eg. return (pressedKeys.indexOf('Meta') !== -1); // CMD key
+    // eg. return (pressedKeys.indexOf('Alt') !== -1); // Option key
     return true;
   },
   isAncestorNodeValid: (
