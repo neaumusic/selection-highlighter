@@ -12,7 +12,7 @@ const options = ({
     // eg. return (windowLocation.host.includes('linkedin.com') === false);
     return true;
   },
-  areGateKeysPressed: function (pressedKeys = []) {
+  areKeysPressed: function (pressedKeys = []) {
     // eg. return (pressedKeys.indexOf('Meta') !== -1) && (pressedKeys.indexOf('Alt') !== -1);
     return true;
   },
@@ -72,7 +72,7 @@ function initialize () {
   function onSelectionChange (e) {
     if (!options.isWindowLocationValid(window.location)) return;
 
-    if (!options.areGateKeysPressed(pressedKeys)) return;
+    if (!options.areKeysPressed(pressedKeys)) return;
 
     // ------------------------------------------------------
     //  remove existing highlights

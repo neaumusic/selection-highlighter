@@ -12,7 +12,7 @@ const defaultOptions = `({
     // eg. return (windowLocation.host.includes('linkedin.com') === false);
     return true;
   },
-  areGateKeysPressed: function (pressedKeys = []) {
+  areKeysPressed: function (pressedKeys = []) {
     // eg. return (pressedKeys.indexOf('Meta') !== -1) && (pressedKeys.indexOf('Alt') !== -1);
     return true;
   },
