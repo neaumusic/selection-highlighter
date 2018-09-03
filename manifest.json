@@ -1,9 +1,15 @@
 {
   "manifest_version": 2,
   "name": "Selection Highlighter",
-  "version": "2.19",
+  "version": "2.20",
   "description": "Passively highlights occurrences of selected text. Maintains current text selection.",
   "options_page": "optionsPage.html",
+  "browser_action": {
+    "default_icon": "icon.png"
+  },
+  "icons": {
+    "128": "icon.png"
+  },
   "content_scripts": [{
     "run_at": "document_end",
     "matches": ["<all_urls>"],
