@@ -32,7 +32,7 @@ const options = ({
       );
     }
   ),
-  isCaseSensitive: false
+  isCaseSensitive: true
 });
 
 chrome.storage.sync.get('optionsText', e => {
