@@ -32,6 +32,7 @@ const options = ({
       );
     }
   ),
+  isCaseSensitive: true
 });
 
 chrome.storage.sync.get('optionsText', e => {
@@ -90,7 +91,7 @@ function initialize () {
     const match = (selection + '').match(/^(\s*)(\S+(?:\s+\S+)*)(\s*)$/);
     if (!match) return;
     const leadingSpaces = match[1];
-    const selectionString = match[2];
+    const selectionString = options.isCaseSensitive ?  match[2] : match[2].toLowerCase();
     const trailingSpaces = match[3];
 
     const isSelectionValid = (selectionString.length >= 3 && !/None|Caret/.exec(selection.type));
@@ -105,9 +106,8 @@ function initialize () {
     for (let i = 0; i < allTextNodes.length; i++) {
       const textNode = allTextNodes[i];
 
-      const matchIndex = textNode.data.indexOf(selectionString);
+      const matchIndex = options.isCaseSensitive ? textNode.data.indexOf(selectionString) : textNode.data.toLowerCase().indexOf(selectionString);
       if (matchIndex === -1) continue;
-
       const hasValidAncestry = (options.isAncestorNodeValid(textNode.parentNode));
       if (!hasValidAncestry) continue;
 

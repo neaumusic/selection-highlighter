@@ -35,6 +35,7 @@ const defaultOptions = `({
       );
     }
   ),
+  isCaseSensitive: true
 })`;
 
 const optionsTextArea = document.querySelector('textarea#options-text');
