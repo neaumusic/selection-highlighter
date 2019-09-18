@@ -3,23 +3,41 @@
 //            see highlighter.js userOptions
 // ------------------------------------------------------
 const defaultOptions = `({
-  // -------------------------------------------------------------
-  //   Hello, thanks for trying my extension, this is all JavaScript!
-  // -------------------------------------------------------------
+  // -------------------------------------------------------------------------------------
+  //                    Hello, and thanks for trying my extension, this is all JavaScript
+  // -------------------------------------------------------------------------------------
+
   highlightedClassName: 'highlighted_selection',
+
   styles: {
     display: 'inline',
     backgroundColor: 'yellow',
   },
+
   isWindowLocationValid: function (windowLocation) {
-    // eg. return (windowLocation.host.includes('linkedin.com') === false);
-    return true;
+    const blacklistedHosts = [
+      'linkedin.com',
+      'collabedit.com',
+      'coderpad.io',
+      'jsbin.com',
+      'plnkr.co',
+    ];
+    return !blacklistedHosts.includes(windowLocation.host);
   },
+
   areKeysPressed: function (pressedKeys = []) {
-    // eg. return (pressedKeys.indexOf('Meta') !== -1); // CMD key
-    // eg. return (pressedKeys.indexOf('Alt') !== -1); // Option key
+    // return pressedKeys.includes('Meta'); // CMD key
+    // return pressedKeys.includes('Alt'); // Option key
     return true;
   },
+
+  occurrenceRegex: function (selectionString) {
+    return new RegExp(selectionString, 'i'); // partial word, case insensitive
+    // return new RegExp(selectionString); // partial word, case sensitive
+    // return new RegExp(\`(?<=\\\\\W)\${selectionString}(?=\\\\\W)\`, 'i'); // whole word, case insensitive
+    // return new RegExp(\`(?<=\\\\\W)\${selectionString}(?=\\\\\W)\`); // whole word, case sensitive
+  },
+
   isAncestorNodeValid: (
     function isAncestorNodeValid (ancestorNode) {
       return (
@@ -35,7 +53,16 @@ const defaultOptions = `({
       );
     }
   ),
-  isCaseSensitive: true
+
+  trimRegex: function () {
+    // leading, selectionString, trailing
+    // trim parts maintained for offset analysis
+    return /^(\\s*)(\\S+(?:\\s+\\S+)*)(\\s*)$/;
+  },
+
+  isSelectionValid: function ({ selectionString, selection }) {
+    return (selectionString.length >= 3 && !/None|Caret/.exec(selection.type));
+  },
 })`;
 
 const optionsTextArea = document.querySelector('textarea#options-text');

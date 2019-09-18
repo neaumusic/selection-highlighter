@@ -9,13 +9,25 @@ const options = ({
     backgroundColor: 'yellow',
   },
   isWindowLocationValid: function (windowLocation) {
-    // eg. return (windowLocation.host.includes('linkedin.com') === false);
-    return true;
+    const blacklistedHosts = [
+      'linkedin.com',
+      'collabedit.com',
+      'coderpad.io',
+      'jsbin.com',
+      'plnkr.co',
+    ];
+    return !blacklistedHosts.includes(windowLocation.host);
   },
   areKeysPressed: function (pressedKeys = []) {
-    // eg. return (pressedKeys.indexOf('Meta') !== -1); // CMD key
-    // eg. return (pressedKeys.indexOf('Alt') !== -1); // Option key
+    // return pressedKeys.includes('Meta'); // CMD key
+    // return pressedKeys.includes('Alt'); // Option key
     return true;
+  },
+  occurrenceRegex: function (selectionString) {
+    return new RegExp(selectionString, 'i'); // partial word, case insensitive
+    // return new RegExp(selectionString); // partial word, case sensitive
+    // return new RegExp(`(?<=\\W)${selectionString}(?=\\W)`, 'i'); // whole word, case insensitive
+    // return new RegExp(`(?<=\\W)${selectionString}(?=\\W)`); // whole word, case sensitive
   },
   isAncestorNodeValid: (
     function isAncestorNodeValid (ancestorNode) {
@@ -32,7 +44,14 @@ const options = ({
       );
     }
   ),
-  isCaseSensitive: true
+  trimRegex: function () {
+    // leading, selectionString, trailing
+    // trim parts maintained for offset analysis
+    return /^(\s*)(\S+(?:\s+\S+)*)(\s*)$/;
+  },
+  isSelectionValid: function ({ selectionString, selection }) {
+    return (selectionString.length >= 3 && !/None|Caret/.exec(selection.type));
+  },
 });
 
 chrome.storage.sync.get('optionsText', e => {
@@ -73,12 +92,8 @@ function initialize () {
 
   function onSelectionChange (e) {
     if (!options.isWindowLocationValid(window.location)) return;
-
     if (!options.areKeysPressed(pressedKeys)) return;
 
-    // ------------------------------------------------------
-    //  remove existing highlights
-    // ------------------------------------------------------
     document.querySelectorAll('.' + options.highlightedClassName).forEach(element => {
       const parent = element.parentNode;
       if (parent) {
@@ -88,14 +103,15 @@ function initialize () {
     });
 
     const selection = document.getSelection();
-    const match = (selection + '').match(/^(\s*)(\S+(?:\s+\S+)*)(\s*)$/);
-    if (!match) return;
-    const leadingSpaces = match[1];
-    const selectionString = options.isCaseSensitive ?  match[2] : match[2].toLowerCase();
-    const trailingSpaces = match[3];
+    const trimmedSelection = String(selection).match(options.trimRegex());
+    if (!trimmedSelection) return;
 
-    const isSelectionValid = (selectionString.length >= 3 && !/None|Caret/.exec(selection.type));
-    if (!isSelectionValid) return;
+    const leadingSpaces = trimmedSelection[1];
+    const selectionString = trimmedSelection[2];
+    const trailingSpaces = trimmedSelection[3];
+    if (!options.isSelectionValid({ selectionString, selection })) return;
+
+    const occurrenceRegex = options.occurrenceRegex(selectionString);
 
     const allTextNodes = [];
     const treeWalker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
@@ -105,12 +121,17 @@ function initialize () {
 
     for (let i = 0; i < allTextNodes.length; i++) {
       const textNode = allTextNodes[i];
+      const parent = textNode.parentNode;
+      highlightOccurrences(textNode);
+      if (parent) parent.normalize();
+    }
 
-      const matchIndex = options.isCaseSensitive ? textNode.data.indexOf(selectionString) : textNode.data.toLowerCase().indexOf(selectionString);
-      if (matchIndex === -1) continue;
-      const hasValidAncestry = (options.isAncestorNodeValid(textNode.parentNode));
-      if (!hasValidAncestry) continue;
+    function highlightOccurrences (textNode) {
+      const match = occurrenceRegex.exec(textNode.data);
+      if (!match) return;
+      if (!options.isAncestorNodeValid(textNode.parentNode)) return;
 
+      const matchIndex = match.index;
       const anchorToFocusDirection = selection.anchorNode.compareDocumentPosition(selection.focusNode);
       const isUsersSelection = (
         (anchorToFocusDirection & Node.DOCUMENT_POSITION_FOLLOWING) ? (
@@ -151,24 +172,21 @@ function initialize () {
           )
         )
       );
-      if (isUsersSelection) {
-        allTextNodes.push(textNode.splitText(matchIndex + selectionString.length));
-        continue;
-      }
-
-      if (matchIndex !== 0) {
-        allTextNodes.push(textNode.splitText(matchIndex));
-        continue;
-
-      } else if (matchIndex === 0) {
-        const remaining = textNode.splitText(selectionString.length);
-        allTextNodes.push(remaining);
+      if (!isUsersSelection) {
+        const trimmedTextNode = textNode.splitText(matchIndex);
+        const remainingTextNode = trimmedTextNode.splitText(selectionString.length);
         const highlightedNode = highlightedSpanTemplate.cloneNode(true);
-              highlightedNode.appendChild(textNode.cloneNode(true));
-        const parent = textNode.parentNode;
-        if (parent) {
-          parent.replaceChild(highlightedNode, textNode);
-        }
+        highlightedNode.appendChild(trimmedTextNode.cloneNode(true));
+
+        const parent = trimmedTextNode.parentNode;
+        if (parent) parent.replaceChild(highlightedNode, trimmedTextNode);
+
+        highlightOccurrences(remainingTextNode);
+      } else {
+        const clonedNode = textNode.cloneNode();
+        const remainingClonedTextNode = clonedNode.splitText(matchIndex + selectionString.length);
+        if (remainingClonedTextNode.data.indexOf(selectionString) !== -1)
+          highlightOccurrences(textNode.splitText(matchIndex + selectionString.length));
       }
     }
   };

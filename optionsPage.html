@@ -4,32 +4,63 @@
     <title>Options</title>
     <style>
       html, body {
+        margin: 0;
         width: 100%;
         height: 100%;
-        margin: 0;
+        background: #f0f0f0;
         padding: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
       }
       textarea#options-text {
-        position: relative;
-        display: block;
-        margin: 2rem auto;
-        width: 40rem;
-        height: 36rem;
+        margin-top: 1rem;
+        width: 45rem;
         max-width: 100%;
+        flex: 1;
+        background: transparent;
+        border: none;
+        outline: none;
         white-space: nowrap;
         font-size: 0.875rem;
       }
+      #buttons-row {
+        width: 100%;
+        border-top: 0.0625rem solid lightgrey;
+        display: flex;
+        justify-content: center;
+      }
       button {
-        position: relative;
-        display: block;
-        margin: 1rem auto;
+        transition: opacity 0.25s;
+        cursor: pointer;
+        margin: 1rem;
+        border: none;
+        font-size: 0.875rem;
+        padding: 0.5rem 1rem;
+        border-radius: 0.25rem;
+        color: white;
+        font-weight: 500;
+        letter-spacing: 0px;
+      }
+      button:hover {
+        opacity: 0.9;
+      }
+      button#submit-button {
+        background: darkcyan;
+      }
+      button#reset-button {
+        background: crimson;
       }
     </style>
   </head>
   <body>
-    <textarea id='options-text'></textarea>
-    <button id='submit-button'>Submit</button>
-    <button id='reset-button'>Reset To Defaults</button>
+    <textarea spellcheck='false' id='options-text'></textarea>
+    <div id='buttons-row'>
+      <button id='submit-button'>Submit</button>
+      <button id='reset-button'>Reset To Defaults</button>
+    </div>
+
   </body>
   <script src='optionsPage.js'></script>
 </html>
