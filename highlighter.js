@@ -26,8 +26,8 @@ const options = ({
   occurrenceRegex: function (selectionString) {
     return new RegExp(selectionString, 'i'); // partial word, case insensitive
     // return new RegExp(selectionString); // partial word, case sensitive
-    // return new RegExp(`(?<=\\W)${selectionString}(?=\\W)`, 'i'); // whole word, case insensitive
-    // return new RegExp(`(?<=\\W)${selectionString}(?=\\W)`); // whole word, case sensitive
+    // return new RegExp(`\\b${selectionString}\\b`, 'i'); // whole word, case insensitive
+    // return new RegExp(`\\b${selectionString}\\b`); // whole word, case sensitive
   },
   isAncestorNodeValid: (
     function isAncestorNodeValid (ancestorNode) {
