@@ -111,7 +111,8 @@ function initialize () {
     const trailingSpaces = trimmedSelection[3];
     if (!options.isSelectionValid({ selectionString, selection })) return;
 
-    const occurrenceRegex = options.occurrenceRegex(selectionString);
+    // https://stackoverflow.com/questions/3561493/is-there-a-regexp-escape-function-in-javascript
+    const occurrenceRegex = options.occurrenceRegex(selectionString.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'));
 
     const allTextNodes = [];
     const treeWalker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
