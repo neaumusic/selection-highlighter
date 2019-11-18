@@ -186,7 +186,7 @@ function initialize () {
       } else {
         const clonedNode = textNode.cloneNode();
         const remainingClonedTextNode = clonedNode.splitText(matchIndex + selectionString.length);
-        if (remainingClonedTextNode.data.indexOf(selectionString) !== -1)
+        if (occurrenceRegex.exec(remainingClonedTextNode.data))
           highlightOccurrences(textNode.splitText(matchIndex + selectionString.length));
       }
     }
