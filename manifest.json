@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Selection Highlighter",
-  "version": "2.25",
+  "version": "2.26",
   "description": "Highlight all occurrences of selected text, with or without a keypress.",
   "options_page": "optionsPage.html",
   "browser_action": {
@@ -16,7 +16,7 @@
     "js": ["highlighter.js"]
   }],
   "permissions": [
-    "<all_urls>",
+    "activeTab",
     "storage"
   ]
 }

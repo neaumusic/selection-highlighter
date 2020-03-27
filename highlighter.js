@@ -123,8 +123,11 @@ function initialize () {
     for (let i = 0; i < allTextNodes.length; i++) {
       const textNode = allTextNodes[i];
       const parent = textNode.parentNode;
-      highlightOccurrences(textNode);
-      if (parent) parent.normalize();
+
+      const highlightedNodes = highlightOccurrences(textNode);
+      if (highlightedNodes) {
+        if (parent) parent.normalize();
+      };
     }
 
     function highlightOccurrences (textNode) {
@@ -182,12 +185,13 @@ function initialize () {
         const parent = trimmedTextNode.parentNode;
         if (parent) parent.replaceChild(highlightedNode, trimmedTextNode);
 
-        highlightOccurrences(remainingTextNode);
+        const otherHighlightedNodes = highlightOccurrences(remainingTextNode) || [];
+        return [ highlightedNode ].concat(otherHighlightedNodes);
       } else {
         const clonedNode = textNode.cloneNode();
         const remainingClonedTextNode = clonedNode.splitText(matchIndex + selectionString.length);
         if (occurrenceRegex.exec(remainingClonedTextNode.data))
-          highlightOccurrences(textNode.splitText(matchIndex + selectionString.length));
+          return highlightOccurrences(textNode.splitText(matchIndex + selectionString.length));
       }
     }
   };
