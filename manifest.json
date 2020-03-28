@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
   "name": "Selection Highlighter",
-  "version": "2.26",
-  "description": "Highlight all occurrences of selected text, with or without a keypress.",
+  "version": "2.27",
+  "description": "Highlight occurrences of selected text, with or without a keypress.",
   "options_page": "optionsPage.html",
   "browser_action": {
     "default_icon": "icon.png"

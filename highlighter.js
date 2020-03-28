@@ -16,7 +16,7 @@ const options = ({
       'jsbin.com',
       'plnkr.co',
     ];
-    return !blacklistedHosts.includes(windowLocation.host);
+    return !blacklistedHosts.some(h => windowLocation.host.includes(h));
   },
   areKeysPressed: function (pressedKeys = []) {
     // return pressedKeys.includes('Meta'); // CMD key

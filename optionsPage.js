@@ -22,7 +22,7 @@ const defaultOptions = `({
       'jsbin.com',
       'plnkr.co',
     ];
-    return !blacklistedHosts.includes(windowLocation.host);
+    return !blacklistedHosts.some(h => windowLocation.host.includes(h));
   },
 
   areKeysPressed: function (pressedKeys = []) {
