@@ -16,7 +16,7 @@ const defaultOptions = `({
 
   isWindowLocationValid: function (windowLocation) {
     const blacklistedHosts = [
-      'linkedin.com',
+      'www.linkedin.com',
       'collabedit.com',
       'coderpad.io',
       'jsbin.com',
