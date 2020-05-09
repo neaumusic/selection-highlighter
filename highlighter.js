@@ -68,10 +68,10 @@ chrome.storage.sync.get('optionsText', e => {
 });
 
 function initialize () {
-  const highlightedSpanTemplate = document.createElement('div');
-    highlightedSpanTemplate.className = options.highlightedClassName;
+  const highlightedMarkTemplate = document.createElement('mark');
+    highlightedMarkTemplate.className = options.highlightedClassName;
   Object.entries(options.styles).forEach(([styleName, styleValue]) => {
-    highlightedSpanTemplate.style[styleName] = styleValue;
+    highlightedMarkTemplate.style[styleName] = styleValue;
   });
 
   const pressedKeys = [];
@@ -179,7 +179,7 @@ function initialize () {
       if (!isUsersSelection) {
         const trimmedTextNode = textNode.splitText(matchIndex);
         const remainingTextNode = trimmedTextNode.splitText(selectionString.length);
-        const highlightedNode = highlightedSpanTemplate.cloneNode(true);
+        const highlightedNode = highlightedMarkTemplate.cloneNode(true);
         highlightedNode.appendChild(trimmedTextNode.cloneNode(true));
 
         const parent = trimmedTextNode.parentNode;
