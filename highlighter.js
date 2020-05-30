@@ -10,11 +10,6 @@ const options = ({
       selection.type !== 'Caret'
     );
   },
-  highlightedClassName: 'highlighted_selection',
-  styles: {
-    backgroundColor: 'rgb(255,255,0,0.7)', // yellow 70%
-    // display: 'inline',
-  },
   isWindowLocationValid: function (windowLocation) {
     const blacklistedHosts = [
       'linkedin.com',
@@ -55,6 +50,11 @@ const options = ({
     // leading, selectionString, trailing
     // trim parts maintained for offset analysis
     return /^(\s*)(\S+(?:\s+\S+)*)(\s*)$/;
+  },
+  highlightedClassName: 'highlighted_selection',
+  styles: {
+    // backgroundColor: 'rgb(255,255,0,0.7)', // yellow 70%
+    // display: 'inline',
   },
 });
 
