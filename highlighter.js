@@ -12,8 +12,8 @@ const options = ({
   },
   highlightedClassName: 'highlighted_selection',
   styles: {
-    display: 'inline',
     backgroundColor: 'rgb(255,255,0,0.7)', // yellow 70%
+    // display: 'inline',
   },
   isWindowLocationValid: function (windowLocation) {
     const blacklistedHosts = [
