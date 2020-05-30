@@ -3,10 +3,17 @@
 //             see options.js defaultOptions
 // ------------------------------------------------------
 const options = ({
+  isSelectionValid: function ({ selectionString, selection }) {
+    return (
+      selectionString.length >= 3 &&
+      selection.type !== 'None' &&
+      selection.type !== 'Caret'
+    );
+  },
   highlightedClassName: 'highlighted_selection',
   styles: {
     display: 'inline',
-    backgroundColor: 'yellow',
+    backgroundColor: 'rgb(255,255,0,0.7)', // yellow 70%
   },
   isWindowLocationValid: function (windowLocation) {
     const blacklistedHosts = [
@@ -48,9 +55,6 @@ const options = ({
     // leading, selectionString, trailing
     // trim parts maintained for offset analysis
     return /^(\s*)(\S+(?:\s+\S+)*)(\s*)$/;
-  },
-  isSelectionValid: function ({ selectionString, selection }) {
-    return (selectionString.length >= 3 && !/None|Caret/.exec(selection.type));
   },
 });
 
