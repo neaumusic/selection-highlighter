@@ -53,7 +53,9 @@ const options = ({
   },
   highlightedClassName: 'highlighted_selection',
   styles: {
-    // backgroundColor: 'rgb(255,255,0,0.7)', // yellow 70%
+    backgroundColor: 'rgb(255,255,0,1)', // yellow 100%
+    margin: '0',
+    padding: '0',
     // display: 'inline',
   },
 });
