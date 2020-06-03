@@ -43,7 +43,7 @@ const defaultOptions = `({
     function isAncestorNodeValid (ancestorNode) {
       return (
         (!ancestorNode) ||
-        // eg. (!ancestorNode.classList || !ancestorNode.classList.contains('CodeMirror')) &&
+        (!ancestorNode.classList || !ancestorNode.classList.contains('CodeMirror')) &&
         (ancestorNode.nodeName !== 'SCRIPT') &&
         (ancestorNode.nodeName !== 'STYLE') &&
         (ancestorNode.nodeName !== 'HEAD') &&
