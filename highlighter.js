@@ -39,6 +39,7 @@ const options = ({
         (ancestorNode.nodeName !== 'SCRIPT') &&
         (ancestorNode.nodeName !== 'STYLE') &&
         (ancestorNode.nodeName !== 'HEAD') &&
+        (ancestorNode.nodeName !== 'TITLE') &&
         (ancestorNode.nodeName !== 'INPUT') &&
         (ancestorNode.nodeName !== 'TEXTAREA') &&
         (ancestorNode.contentEditable !== 'true') &&
@@ -56,6 +57,7 @@ const options = ({
     backgroundColor: 'rgb(255,255,0,1)', // yellow 100%
     margin: '0',
     padding: '0',
+    lineHeight: '1',
     // display: 'inline',
   },
 });

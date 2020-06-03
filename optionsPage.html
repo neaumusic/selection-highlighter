@@ -31,7 +31,29 @@
         width: 100%;
         border-top: 0.0625rem solid lightgrey;
         display: flex;
+        justify-content: space-between;
+      }
+      #left {
+        flex: 1 1;
+      }
+      #center {
+        flex: 4 0;
+        display: flex;
         justify-content: center;
+      }
+      #right {
+        flex: 1 0;
+        display: flex;
+        justify-content: flex-end
+      }
+      #donation-button-form {
+        display: flex;
+        align-items: center;
+      }
+      #donation-button-input {
+        height: 2rem;
+        margin: 0.5rem 1rem;
+        padding: 0.5rem 1rem;
       }
       button {
         transition: opacity 0.25s;
@@ -59,8 +81,21 @@
   <body>
     <textarea spellcheck='false' id='options-text'></textarea>
     <div id='buttons-row'>
-      <button id='submit-button'>Submit</button>
-      <button id='reset-button'>Reset To Defaults (Please consider this if you have not recently)</button>
+      <div id='left'></div>
+      <div id='center'>
+        <button id='submit-button'>Submit</button>
+        <button id='reset-button'>Reset To Defaults (Please consider this if you have not recently)</button>
+      </div>
+      <div id='right'>
+        <form id='donation-button-form' action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
+        <input type="hidden" name="cmd" value="_donations" />
+        <input type="hidden" name="business" value="L5G6ATNAMJHC4" />
+        <input type="hidden" name="item_name" value="Thank you!!" />
+        <input type="hidden" name="currency_code" value="USD" />
+        <input id='donation-button-input' type="image" src="./donation-button.png" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
+        <img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1" />
+        </form>
+      </div>
     </div>
 
   </body>
