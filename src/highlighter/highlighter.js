@@ -94,6 +94,9 @@ function initialize () {
       pressedKeys.splice(index, 1);
     }
   });
+  window.addEventListener('blur', e => {
+    pressedKeys.splice(0, pressedKeys.length);
+  });
 
   document.addEventListener('selectionchange', onSelectionChange);
 
