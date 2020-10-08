@@ -21,6 +21,7 @@ const defaultOptions = `({
       'coderpad.io',
       'jsbin.com',
       'plnkr.co',
+      'youtube.com',
     ];
     return !blacklistedHosts.some(h => windowLocation.host.includes(h));
   },
