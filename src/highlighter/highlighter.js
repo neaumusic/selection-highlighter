@@ -112,6 +112,9 @@ function initialize () {
         parent.normalize();
       }
     });
+    document.querySelectorAll('.highlighted_selection_scroll_marker').forEach(element => {
+      document.body.removeChild(element);
+    });
 
     const selection = document.getSelection();
     const trimmedSelection = String(selection).match(options.trimRegex());
@@ -195,6 +198,22 @@ function initialize () {
 
         const parent = trimmedTextNode.parentNode;
         if (parent) parent.replaceChild(highlightedNode, trimmedTextNode);
+
+        const clientRect = highlightedNode.getBoundingClientRect();
+        if (clientRect.width && clientRect.height) {
+          const scrollMarker = document.createElement('div');
+          scrollMarker.className = 'highlighted_selection_scroll_marker';
+          scrollMarker.style.height = '2px';
+          scrollMarker.style.width = '16px';
+          scrollMarker.style.border = '1px solid grey';
+          scrollMarker.style.boxSizing = 'content-box';
+          scrollMarker.style.backgroundColor = 'yellow';
+          scrollMarker.style.position = 'fixed';
+          scrollMarker.style.top = `${window.innerHeight * (clientRect.top + (clientRect.top - clientRect.bottom) / 2 + window.scrollY) / document.body.clientHeight}px`;
+          scrollMarker.style.right = '0px';
+          scrollMarker.style.zIndex = '2147483647';
+          document.body.appendChild(scrollMarker);
+        }
 
         const otherHighlightedNodes = highlightOccurrences(remainingTextNode) || [];
         return [ highlightedNode ].concat(otherHighlightedNodes);
