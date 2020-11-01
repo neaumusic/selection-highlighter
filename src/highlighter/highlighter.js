@@ -60,6 +60,33 @@ const options = ({
     lineHeight: '1',
     // display: 'inline',
   },
+  areScrollMarkersEnabled: function () { return true; },
+  scrollMarkerClassName: 'highlighted_selection_scroll_marker',
+  scrollMarkerStyles: function ({ window, document, highlightedNode }) {
+    const clientRect = highlightedNode.getBoundingClientRect();
+    if (!clientRect.width || !clientRect.height) {
+      return false;
+    }
+
+    return {
+      height: '2px',
+      width: '16px',
+      boxSizing: 'content-box',
+      border: '1px solid grey',
+      position: 'fixed',
+      top: (
+        // window height times percent of element position in document
+        window.innerHeight * (
+          + window.scrollY
+          + clientRect.top
+          + (0.5 * (clientRect.top - clientRect.bottom))
+        ) / document.body.clientHeight
+      ) + 'px',
+      right: '0px',
+      backgroundColor: 'yellow',
+      zIndex: '2147483647',
+    };
+  },
 });
 
 chrome.storage.sync.get('optionsText', e => {
@@ -112,9 +139,11 @@ function initialize () {
         parent.normalize();
       }
     });
-    document.querySelectorAll('.highlighted_selection_scroll_marker').forEach(element => {
-      document.body.removeChild(element);
-    });
+    if (options.areScrollMarkersEnabled()) {
+      document.querySelectorAll('.' + options.scrollMarkerClassName).forEach(element => {
+        document.body.removeChild(element);
+      });
+    }
 
     const selection = document.getSelection();
     const trimmedSelection = String(selection).match(options.trimRegex());
@@ -199,20 +228,16 @@ function initialize () {
         const parent = trimmedTextNode.parentNode;
         if (parent) parent.replaceChild(highlightedNode, trimmedTextNode);
 
-        const clientRect = highlightedNode.getBoundingClientRect();
-        if (clientRect.width && clientRect.height) {
+        if (options.areScrollMarkersEnabled()) {
           const scrollMarker = document.createElement('div');
-          scrollMarker.className = 'highlighted_selection_scroll_marker';
-          scrollMarker.style.height = '2px';
-          scrollMarker.style.width = '16px';
-          scrollMarker.style.border = '1px solid grey';
-          scrollMarker.style.boxSizing = 'content-box';
-          scrollMarker.style.backgroundColor = 'yellow';
-          scrollMarker.style.position = 'fixed';
-          scrollMarker.style.top = `${window.innerHeight * (clientRect.top + (clientRect.top - clientRect.bottom) / 2 + window.scrollY) / document.body.clientHeight}px`;
-          scrollMarker.style.right = '0px';
-          scrollMarker.style.zIndex = '2147483647';
-          document.body.appendChild(scrollMarker);
+            scrollMarker.className = options.scrollMarkerClassName;
+          const scrollMarkerStyles = options.scrollMarkerStyles({ window, document, highlightedNode });
+          if (scrollMarkerStyles) {
+            Object.entries(scrollMarkerStyles).forEach(([styleName, styleValue]) => {
+              scrollMarker.style[styleName] = styleValue;
+            });
+            document.body.appendChild(scrollMarker);
+          }
         }
 
         const otherHighlightedNodes = highlightOccurrences(remainingTextNode) || [];

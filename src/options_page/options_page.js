@@ -71,6 +71,38 @@ const defaultOptions = `({
     lineHeight: '1',
     // display: 'inline',
   },
+
+  areScrollMarkersEnabled: function () {
+    return true;
+  },
+
+  scrollMarkerClassName: 'highlighted_selection_scroll_marker',
+
+  scrollMarkerStyles: function ({ window, document, highlightedNode }) {
+    const clientRect = highlightedNode.getBoundingClientRect();
+    if (!clientRect.width || !clientRect.height) {
+      return false;
+    }
+
+    return {
+      height: '2px',
+      width: '16px',
+      boxSizing: 'content-box',
+      border: '1px solid grey',
+      position: 'fixed',
+      top: (
+        // window height times percent of element position in document
+        window.innerHeight * (
+          + window.scrollY
+          + clientRect.top
+          + (0.5 * (clientRect.top - clientRect.bottom))
+        ) / document.body.clientHeight
+      ) + 'px',
+      right: '0px',
+      backgroundColor: 'yellow',
+      zIndex: '2147483647',
+    };
+  },
 })`;
 
 const optionsTextArea = document.querySelector('textarea#options-text');

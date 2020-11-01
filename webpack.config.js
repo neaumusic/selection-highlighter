@@ -115,7 +115,7 @@ const options_page = {
     ],
   },
   plugins: [
-    new CleanWebpackPlugin(),
+    // new CleanWebpackPlugin(),
     new HtmlWebPackPlugin({
       filename: 'options_page.html',
       template: './src/options_page/options_page.html',
