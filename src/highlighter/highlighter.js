@@ -128,22 +128,39 @@ function initialize () {
 
   document.addEventListener('selectionchange', onSelectionChange);
 
+  let latestStartTime = null;
   function onSelectionChange (e) {
+    latestStartTime = performance.now();
+
     if (!options.isWindowLocationValid(window.location)) return;
     if (!options.areKeysPressed(pressedKeys)) return;
 
-    document.querySelectorAll('.' + options.highlightedClassName).forEach(element => {
-      const parent = element.parentNode;
-      if (parent) {
-        parent.replaceChild(new Text(element.textContent || ''), element);
-        parent.normalize();
-      }
-    });
-    if (options.areScrollMarkersEnabled()) {
-      document.querySelectorAll('.' + options.scrollMarkerClassName).forEach(element => {
-        document.body.removeChild(element);
+    removeThenHighlight(latestStartTime);
+  };
+
+  function removeThenHighlight (startTime) {
+    requestAnimationFrame(() => {
+      if (startTime !== latestStartTime) return;
+
+      document.querySelectorAll('.' + options.highlightedClassName).forEach(element => {
+        const parent = element.parentNode;
+        if (parent) {
+          parent.replaceChild(new Text(element.textContent || ''), element);
+          parent.normalize();
+        }
       });
-    }
+      if (options.areScrollMarkersEnabled()) {
+        document.querySelectorAll('.' + options.scrollMarkerClassName).forEach(element => {
+          document.body.removeChild(element);
+        });
+      }
+
+      requestAnimationFrame(() => highlight(startTime));
+    });
+  }
+
+  function highlight (startTime) {
+    if (startTime !== latestStartTime) return;
 
     const selection = document.getSelection();
     const trimmedSelection = String(selection).match(options.trimRegex());
@@ -166,11 +183,39 @@ function initialize () {
     for (let i = 0; i < allTextNodes.length; i++) {
       const textNode = allTextNodes[i];
       const parent = textNode.parentNode;
-
       const highlightedNodes = highlightOccurrences(textNode);
       if (highlightedNodes) {
         if (parent) parent.normalize();
       };
+    }
+
+    if (options.areScrollMarkersEnabled()) {
+      const highlighted = document.querySelectorAll('.' + options.highlightedClassName);
+      const scrollMarkersFragment = document.createDocumentFragment();
+
+      for (let i = 0; i < highlighted.length; i++) {
+        setTimeout(() => {
+          if (startTime !== latestStartTime) return;
+
+          const highlightedNode = highlighted[i];
+          const scrollMarker = document.createElement('div');
+            scrollMarker.className = options.scrollMarkerClassName;
+          const scrollMarkerStyles = options.scrollMarkerStyles({ window, document, highlightedNode });
+          if (scrollMarkerStyles) {
+            Object.entries(scrollMarkerStyles).forEach(([styleName, styleValue]) => {
+              scrollMarker.style[styleName] = styleValue;
+            });
+            scrollMarkersFragment.appendChild(scrollMarker);
+          }
+        }, 0);
+      }
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          if (startTime === latestStartTime) {
+            document.body.appendChild(scrollMarkersFragment);
+          }
+        }, 0);
+      })
     }
 
     function highlightOccurrences (textNode) {
@@ -227,18 +272,6 @@ function initialize () {
 
         const parent = trimmedTextNode.parentNode;
         if (parent) parent.replaceChild(highlightedNode, trimmedTextNode);
-
-        if (options.areScrollMarkersEnabled()) {
-          const scrollMarker = document.createElement('div');
-            scrollMarker.className = options.scrollMarkerClassName;
-          const scrollMarkerStyles = options.scrollMarkerStyles({ window, document, highlightedNode });
-          if (scrollMarkerStyles) {
-            Object.entries(scrollMarkerStyles).forEach(([styleName, styleValue]) => {
-              scrollMarker.style[styleName] = styleValue;
-            });
-            document.body.appendChild(scrollMarker);
-          }
-        }
 
         const otherHighlightedNodes = highlightOccurrences(remainingTextNode) || [];
         return [ highlightedNode ].concat(otherHighlightedNodes);
