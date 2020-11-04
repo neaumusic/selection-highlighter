@@ -155,13 +155,11 @@ function initialize () {
         });
       }
 
-      requestAnimationFrame(() => highlight(startTime));
+      highlight(startTime);
     });
   }
 
   function highlight (startTime) {
-    if (startTime !== latestStartTime) return;
-
     const selection = document.getSelection();
     const trimmedSelection = String(selection).match(options.trimRegex());
     if (!trimmedSelection) return;
@@ -190,26 +188,29 @@ function initialize () {
     }
 
     if (options.areScrollMarkersEnabled()) {
-      const highlighted = document.querySelectorAll('.' + options.highlightedClassName);
-      const scrollMarkersFragment = document.createDocumentFragment();
-
-      for (let i = 0; i < highlighted.length; i++) {
-        setTimeout(() => {
-          if (startTime !== latestStartTime) return;
-
-          const highlightedNode = highlighted[i];
-          const scrollMarker = document.createElement('div');
-            scrollMarker.className = options.scrollMarkerClassName;
-          const scrollMarkerStyles = options.scrollMarkerStyles({ window, document, highlightedNode });
-          if (scrollMarkerStyles) {
-            Object.entries(scrollMarkerStyles).forEach(([styleName, styleValue]) => {
-              scrollMarker.style[styleName] = styleValue;
-            });
-            scrollMarkersFragment.appendChild(scrollMarker);
-          }
-        }, 0);
-      }
       requestAnimationFrame(() => {
+        if (startTime !== latestStartTime) return;
+
+        const highlighted = document.querySelectorAll('.' + options.highlightedClassName);
+        const scrollMarkersFragment = document.createDocumentFragment();
+
+        for (let i = 0; i < highlighted.length; i++) {
+          setTimeout(() => {
+            if (startTime !== latestStartTime) return;
+
+            const highlightedNode = highlighted[i];
+            const scrollMarker = document.createElement('div');
+              scrollMarker.className = options.scrollMarkerClassName;
+            const scrollMarkerStyles = options.scrollMarkerStyles({ window, document, highlightedNode });
+            if (scrollMarkerStyles) {
+              Object.entries(scrollMarkerStyles).forEach(([styleName, styleValue]) => {
+                scrollMarker.style[styleName] = styleValue;
+              });
+              scrollMarkersFragment.appendChild(scrollMarker);
+            }
+          }, 0);
+        }
+
         setTimeout(() => {
           if (startTime === latestStartTime) {
             document.body.appendChild(scrollMarkersFragment);
