@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Selection Highlighter",
-  "version": "2.37",
+  "version": "2.39",
   "description": "Highlight occurrences of selected text, with or without a keypress.",
   "options_page": "${OPTIONS_PAGE_PATH}/options_page.html",
   "content_scripts": [{

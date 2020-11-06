@@ -135,29 +135,21 @@ function initialize () {
     if (!options.isWindowLocationValid(window.location)) return;
     if (!options.areKeysPressed(pressedKeys)) return;
 
-    removeThenHighlight(latestStartTime);
-  };
-
-  function removeThenHighlight (startTime) {
-    requestAnimationFrame(() => {
-      if (startTime !== latestStartTime) return;
-
-      document.querySelectorAll('.' + options.highlightedClassName).forEach(element => {
-        const parent = element.parentNode;
-        if (parent) {
-          parent.replaceChild(new Text(element.textContent || ''), element);
-          parent.normalize();
-        }
-      });
-      if (options.areScrollMarkersEnabled()) {
-        document.querySelectorAll('.' + options.scrollMarkerClassName).forEach(element => {
-          document.body.removeChild(element);
-        });
+    document.querySelectorAll('.' + options.highlightedClassName).forEach(element => {
+      const parent = element.parentNode;
+      if (parent) {
+        parent.replaceChild(new Text(element.textContent || ''), element);
+        parent.normalize();
       }
-
-      highlight(startTime);
     });
-  }
+    if (options.areScrollMarkersEnabled()) {
+      document.querySelectorAll('.' + options.scrollMarkerClassName).forEach(element => {
+        document.body.removeChild(element);
+      });
+    }
+
+    highlight(latestStartTime);
+  };
 
   function highlight (startTime) {
     const selection = document.getSelection();
