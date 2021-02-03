@@ -17,6 +17,7 @@ const options = ({
       'jsbin.com',
       'plnkr.co',
       'youtube.com',
+      'track.toggl.com',
     ];
     return !blacklistedHosts.some(h => windowLocation.host.includes(h));
   },
