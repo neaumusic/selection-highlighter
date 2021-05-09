@@ -104,7 +104,7 @@ chrome.storage.sync.get('optionsText', e => {
 });
 
 function initialize () {
-  const highlightedMarkTemplate = document.createElement('mark');
+  const highlightedMarkTemplate = document.createElement('span');
     highlightedMarkTemplate.className = options.highlightedClassName;
   Object.entries(options.styles).forEach(([styleName, styleValue]) => {
     highlightedMarkTemplate.style[styleName] = styleValue;
