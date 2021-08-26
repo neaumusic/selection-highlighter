@@ -6,9 +6,10 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const RemoveFilesWebpackPlugin = require('remove-files-webpack-plugin');
 
 const ROOT = `dist/chrome-extension`;
+const OPTIONS_PATH = `options`;
 const OPTIONS_PAGE_PATH = `options_page`;
 const HIGHLIGHTER_PATH = `highlighter`;
-const ASSETS_PATH = `assets`;
+const IMAGES_PATH = `images`;
 
 const manifest = {
   entry: './src/chrome_extension/manifest.json',
@@ -20,18 +21,24 @@ const manifest = {
     new CleanWebpackPlugin(),
     new CopyWebpackPlugin({
       patterns: [
-        {from: 'LICENSE.md'},
+        {
+          from: 'LICENSE.md'
+        },
         {
           from: 'src/chrome_extension/manifest.json',
           transform: function(manifestBuffer, path) {
             const manifestString = manifestBuffer.toString()
-                .replace(/\$\{OPTIONS_PAGE_PATH\}/g, OPTIONS_PAGE_PATH)
-                .replace(/\$\{HIGHLIGHTER_PATH\}/g, HIGHLIGHTER_PATH)
-                .replace(/\$\{ASSETS_PATH\}/g, ASSETS_PATH);
+              .replace(/\$\{OPTIONS_PATH\}/g, OPTIONS_PATH)
+              .replace(/\$\{OPTIONS_PAGE_PATH\}/g, OPTIONS_PAGE_PATH)
+              .replace(/\$\{HIGHLIGHTER_PATH\}/g, HIGHLIGHTER_PATH)
+              .replace(/\$\{IMAGES_PATH\}/g, IMAGES_PATH);
             return Buffer.from(manifestString);
           },
         },
-        {from: 'assets/icon.png', to: ASSETS_PATH},
+        {
+          from: 'src/images/icon.png',
+          to: IMAGES_PATH,
+        },
       ],
     }),
     new RemoveFilesWebpackPlugin({
@@ -80,27 +87,25 @@ const options_page = {
     rules: [
       {
         test: /\.js$/i,
-        use: [
-          {loader: 'babel-loader'},
-        ],
+        use: [{
+          loader: 'babel-loader'
+        }],
       },
       {
         test: /\.html$/i,
-        use: [
-          {loader: 'html-loader'},
-        ],
+        use: [{
+          loader: 'html-loader'
+        }],
       },
       {
         test: /\.css$/i,
-        use: [
-          {
-            loader: 'file-loader',
-            options: {
-              esModule: false,
-              name: '[name].[ext]',
-            },
+        use: [{
+          loader: 'file-loader',
+          options: {
+            esModule: false,
+            name: '[name].[ext]',
           },
-        ],
+        }],
       },
       {
         test: /\.(jpg|jpeg|png|gif|eot|otf|svg|ttf|woff|woff2)$/i,
@@ -115,7 +120,7 @@ const options_page = {
     ],
   },
   plugins: [
-    new CleanWebpackPlugin(),
+    // new CleanWebpackPlugin(),
     new HtmlWebPackPlugin({
       filename: 'options_page.html',
       template: './src/options_page/options_page.html',
@@ -126,9 +131,30 @@ const options_page = {
   mode: 'none',
 };
 
+const options = {
+  entry: './src/options',
+  output: {
+    path: path.resolve(__dirname, `${ROOT}/${OPTIONS_PATH}`),
+    filename: 'defaultOptionsText.js',
+  },
+  module: {
+    rules: [
+      {
+        test: /\.js$/i,
+        use: [
+          {loader: 'babel-loader'},
+        ],
+      },
+    ],
+  },
+  stats: true,
+  mode: 'none',
+};
+
 module.exports = [
   manifest,
   highlighter,
+  options,
   options_page,
 ];
 

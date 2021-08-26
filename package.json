@@ -5,7 +5,7 @@
   "scripts": {
     "build": "rm -rf dist/chrome-extension; webpack --config webpack.config.js",
     "postinstall": "rm -rf dist/chrome-extension; webpack --config webpack.config.js",
-    "watch": "webpack --watch --config webpack.config.js"
+    "watch": "rm -rf dist/chrome-extension; webpack --watch --config webpack.config.js"
   },
   "repository": {
     "type": "git",

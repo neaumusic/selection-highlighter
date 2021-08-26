@@ -11,13 +11,16 @@
     "js": ["${HIGHLIGHTER_PATH}/highlighter.js"]
   }],
   "browser_action": {
-    "default_icon": "${ASSETS_PATH}/icon.png"
+    "default_icon": "${IMAGES_PATH}/icon.png"
   },
   "icons": {
-    "1024": "${ASSETS_PATH}/icon.png"
+    "1024": "${IMAGES_PATH}/icon.png"
   },
   "permissions": [
     "activeTab",
     "storage"
+  ],
+  "web_accessible_resources": [
+    "${OPTIONS_PATH}/defaultOptionsText.js"
   ]
 }

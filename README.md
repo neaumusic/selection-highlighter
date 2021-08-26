@@ -14,7 +14,7 @@ For code inspection and document analysis: search for and find keywords.
 
 Highlight works on all sites, including GitHub, StackOverflow, HackerNews, etc.
 
-<img src='assets/screenshot_example.png' width='640' />
+<img src='src/images/screenshot_example.png' width='640' />
 
 Installation
 --
