@@ -1,10 +1,11 @@
 {
   "manifest_version": 2,
   "name": "Selection Highlighter",
-  "version": "2.39",
+  "version": "2.40",
   "description": "Highlight occurrences of selected text, with or without a keypress.",
   "options_page": "${OPTIONS_PAGE_PATH}/options_page.html",
   "content_scripts": [{
+    "all_frames": true,
     "run_at": "document_end",
     "matches": ["<all_urls>"],
     "js": ["${HIGHLIGHTER_PATH}/highlighter.js"]
@@ -13,7 +14,7 @@
     "default_icon": "${ASSETS_PATH}/icon.png"
   },
   "icons": {
-    "128": "${ASSETS_PATH}/icon.png"
+    "1024": "${ASSETS_PATH}/icon.png"
   },
   "permissions": [
     "activeTab",

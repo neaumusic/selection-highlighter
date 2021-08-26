@@ -3,8 +3,9 @@
   "version": "1.0.1",
   "description": "browser highlighter for code analysis",
   "scripts": {
-    "build": "webpack --config webpack.config.js",
-    "postinstall": "webpack --config webpack.config.js"
+    "build": "rm -rf dist/chrome-extension; webpack --config webpack.config.js",
+    "postinstall": "rm -rf dist/chrome-extension; webpack --config webpack.config.js",
+    "watch": "webpack --watch --config webpack.config.js"
   },
   "repository": {
     "type": "git",

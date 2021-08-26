@@ -17,7 +17,7 @@ const manifest = {
     filename: 'DELETED.js',
   },
   plugins: [
-    // new CleanWebpackPlugin(),
+    new CleanWebpackPlugin(),
     new CopyWebpackPlugin({
       patterns: [
         {from: 'LICENSE.md'},
@@ -64,7 +64,7 @@ const highlighter = {
     ],
   },
   plugins: [
-    // new CleanWebpackPlugin(),
+    new CleanWebpackPlugin(),
   ],
   stats: true,
   mode: 'none',
@@ -115,7 +115,7 @@ const options_page = {
     ],
   },
   plugins: [
-    // new CleanWebpackPlugin(),
+    new CleanWebpackPlugin(),
     new HtmlWebPackPlugin({
       filename: 'options_page.html',
       template: './src/options_page/options_page.html',

@@ -69,8 +69,8 @@ const defaultOptions = `({
     backgroundColor: 'rgb(255,255,0,1)', // yellow 100%
     margin: '0',
     padding: '0',
-    lineHeight: '1',
-    // display: 'inline',
+    // lineHeight: '1',
+    display: 'inline',
   },
 
   areScrollMarkersEnabled: function () {
