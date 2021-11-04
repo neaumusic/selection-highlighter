@@ -32,6 +32,6 @@ GitHub (build source):
 1. Click green button "Clone Or Download", "[Download Zip](https://github.com/neaumusic/selection-highlighter/archive/master.zip)", and unzip the folder to a permanent location
 2. Run `yarn` in the root (see package.json scripts)
 
-    - On mac/linux use `brew install yarn` if you don't have it ([homebrew](https://brew.sh/) computer club is where Apple was founded)
+    - On mac/linux use `brew install yarn` (or better yet use [volta](https://volta.sh/) which automatically switches node/yarn versions by changing directories) if you don't have it ([homebrew](https://brew.sh/) computer club is where Apple was founded). brew and `n` / `nvm` version managers aren't really compatible with volta but I recommend volta (11/2021)
 
 3. Go to chrome://extensions, click "Load Unpacked", select the `dist/chrome-extension` folder
