@@ -1,8 +1,5 @@
-export const defaultOptionsText = `
-({
-  // ------------------------------------------------------------------------------
-  //       Hello, and thanks for trying my extension, this is all JavaScript
-  // ------------------------------------------------------------------------------
+export const defaultOptionsText = `({
+  // Hello, and thanks for trying my extension, this is all JavaScript
 
   isSelectionValid: function ({ selectionString, selection }) {
     return (
@@ -102,5 +99,4 @@ export const defaultOptionsText = `
       zIndex: '2147483647',
     };
   },
-})
-`;
+})`;

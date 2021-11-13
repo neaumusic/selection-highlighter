@@ -1,11 +1,11 @@
 {
   "name": "selection_highlighter",
-  "version": "1.0.1",
+  "version": "2.40",
   "description": "browser highlighter for code analysis",
   "scripts": {
-    "build": "rm -rf dist/chrome-extension; webpack --config webpack.config.js",
-    "postinstall": "rm -rf dist/chrome-extension; webpack --config webpack.config.js",
-    "watch": "rm -rf dist/chrome-extension; webpack --watch --config webpack.config.js"
+    "build": "rm -rf dist; webpack --config webpack.config.js",
+    "postinstall": "rm -rf dist; webpack --config webpack.config.js",
+    "watch": "rm -rf dist; webpack --watch --config webpack.config.js"
   },
   "repository": {
     "type": "git",

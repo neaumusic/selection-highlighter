@@ -1,4 +1,4 @@
-import { defaultOptionsText } from '../options';
+import { defaultOptionsText } from '../options/default_options_text';
 
 const options = eval(defaultOptionsText);
 chrome.storage.sync.get('optionsText', e => {
