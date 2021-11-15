@@ -59,14 +59,12 @@ function addGateKeyListeners (options) {
   });
 }
 
-let lastSelectionString = null;
 let isNewSelection = false;
-let didClearSelection = false;
+let lastSelectionString = null;
+let latestRunNumber = 0;
 function onSelectStart () {
   isNewSelection = true;
 }
-
-let latestRunNumber = 0;
 function onSelectionChange (e) {
   const selectionString = window.getSelection() + '';
   if (!isNewSelection) {
@@ -137,7 +135,7 @@ function highlight (runNumber) {
     const highlightedNodes = highlightOccurrences(textNode);
     if (highlightedNodes) {
       if (parent) parent.normalize();
-    };
+    }
   }
 
   if (options.areScrollMarkersEnabled()) {
@@ -189,13 +187,13 @@ function highlight (runNumber) {
         if (textNode === selection.anchorNode) {
           return (
             selection.anchorNode.nodeType === Node.ELEMENT_NODE && selection.anchorOffset === 0 ||
-            selection.anchorOffset === matchIndex - leadingSpaces.length
+            selection.anchorOffset <= matchIndex - leadingSpaces.length
           );
 
         } else if (textNode === selection.focusNode) {
           return (
             selection.focusNode.nodeType === Node.ELEMENT_NODE && selection.focusOffset === 0 ||
-            selection.focusOffset === matchIndex + selectionString.length + trailingSpaces.length
+            selection.focusOffset >= matchIndex + selectionString.length + trailingSpaces.length
           );
 
         } else {
@@ -209,13 +207,13 @@ function highlight (runNumber) {
         if (textNode === selection.anchorNode) {
           return (
             selection.anchorNode.nodeType === Node.ELEMENT_NODE && selection.anchorOffset === 0 ||
-            selection.anchorOffset === matchIndex + selectionString.length + trailingSpaces.length
+            selection.anchorOffset >= matchIndex + selectionString.length + trailingSpaces.length
           );
 
         } else if (textNode === selection.focusNode) {
           return (
             selection.focusNode.nodeType === Node.ELEMENT_NODE && selection.focusOffset === 0 ||
-            selection.focusOffset === matchIndex - leadingSpaces.length
+            selection.focusOffset <= matchIndex - leadingSpaces.length
           );
 
         } else {
