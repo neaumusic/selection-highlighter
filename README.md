@@ -30,7 +30,9 @@ Firefox Add-ons (packed, .xpi):
 
 GitHub (latest release):
 1. Click [Releases](https://github.com/neaumusic/selection-highlighter/releases), download the latest 'chrome-extension.zip' asset, unzip the folder to a permanent location
-2. Go to chrome://extensions, click "Load Unpacked", select the unzipped folder
+2. Add to browser
+    - Chrome: go to `chrome://extensions`, click "Load Unpacked", select the `chrome_extension` folder
+    - Firefox: go to `about:debugging#/runtime/this-firefox`, click "Load Temporary Add-on", select `firefox_extension/manifest.json`
 
 GitHub (build source):
 1. Click green button "Clone Or Download", "[Download Zip](https://github.com/neaumusic/selection-highlighter/archive/master.zip)", and unzip the folder to a permanent location
