@@ -13,14 +13,13 @@
         <button id='reset-button'>Reset To Defaults</button>
       </div>
       <div id='right'>
-        <!-- https://www.paypal.com/donate/?business=L5G6ATNAMJHC4&no_recurring=0&item_name=Selection+Highlighter+-+Thank+You&currency_code=USD -->
         <form id='donation-button-form' action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
           <input type="hidden" name="cmd" value="_donations" />
           <input type="hidden" name="business" value="L5G6ATNAMJHC4" />
-          <input type="hidden" name="item_name" value="Thank you!!" />
+          <input type="hidden" name="no_recurring" value="0" />
+          <input type="hidden" name="item_name" value="Selection Highlighter (Thank You)" />
           <input type="hidden" name="currency_code" value="USD" />
           <input id='donation-button-input' type="image" src="../images/paypal_icon.png" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
-          <img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1" />
         </form>
       </div>
     </div>
