@@ -17,7 +17,6 @@
     "1024": "${IMAGES_PATH}/icon.png"
   },
   "permissions": [
-    "activeTab",
     "storage"
   ],
   "web_accessible_resources": [
