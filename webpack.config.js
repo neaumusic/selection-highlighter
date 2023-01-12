@@ -17,7 +17,7 @@ const FIREFOX_MANIFEST_ENTRY = `./src/firefox_extension/manifest.json`;
 const OPTIONS_PATH = `options`;
 const OPTIONS_PAGE_PATH = `options_page`;
 const OPTIONS_UI_PATH = `options_ui`;
-const HIGHLIGHTER_PATH = `highlighter`;
+const CONTENT_SCRIPT_PATH = `content_script`;
 const IMAGES_PATH = `images`;
 
 const manifest = ({ entry, outputDirectory }) => ({
@@ -41,7 +41,7 @@ const manifest = ({ entry, outputDirectory }) => ({
               .replace(/\$\{OPTIONS_PATH\}/g, OPTIONS_PATH)
               .replace(/\$\{OPTIONS_PAGE_PATH\}/g, OPTIONS_PAGE_PATH)
               .replace(/\$\{OPTIONS_UI_PATH\}/g, OPTIONS_UI_PATH)
-              .replace(/\$\{HIGHLIGHTER_PATH\}/g, HIGHLIGHTER_PATH)
+              .replace(/\$\{CONTENT_SCRIPT_PATH\}/g, CONTENT_SCRIPT_PATH)
               .replace(/\$\{IMAGES_PATH\}/g, IMAGES_PATH);
             return Buffer.from(manifestString);
           },
@@ -65,11 +65,11 @@ const manifest = ({ entry, outputDirectory }) => ({
   mode: 'none',
 });
 
-const highlighter = ({ outputDirectory }) => ({
-  entry: './src/highlighter/highlighter.js',
+const content_script = ({ outputDirectory }) => ({
+  entry: './src/content_script/main.js',
   output: {
-    path: path.resolve(__dirname, `${ROOT}/${outputDirectory}/${HIGHLIGHTER_PATH}`),
-    filename: 'highlighter.js',
+    path: path.resolve(__dirname, `${ROOT}/${outputDirectory}/${CONTENT_SCRIPT_PATH}`),
+    filename: 'main.js',
   },
   module: {
     rules: [
@@ -214,12 +214,12 @@ const options = ({ outputDirectory }) => ({
 module.exports = [
   // chrome
   manifest({ entry: CHROME_MANIFEST_ENTRY, outputDirectory: CHROME_EXTENSION_OUTPUT_PATH }),
-  highlighter({ outputDirectory: CHROME_EXTENSION_OUTPUT_PATH }),
+  content_script({ outputDirectory: CHROME_EXTENSION_OUTPUT_PATH }),
   options({ outputDirectory: CHROME_EXTENSION_OUTPUT_PATH }),
   options_page({ outputDirectory: CHROME_EXTENSION_OUTPUT_PATH }),
   // firefox
   manifest({ entry: FIREFOX_MANIFEST_ENTRY, outputDirectory: FIREFOX_EXTENSION_OUTPUT_PATH }),
-  highlighter({ outputDirectory: FIREFOX_EXTENSION_OUTPUT_PATH }),
+  content_script({ outputDirectory: FIREFOX_EXTENSION_OUTPUT_PATH }),
   options({ outputDirectory: FIREFOX_EXTENSION_OUTPUT_PATH }),
   options_ui({ outputDirectory: FIREFOX_EXTENSION_OUTPUT_PATH }),
 ];

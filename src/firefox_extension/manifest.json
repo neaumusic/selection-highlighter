@@ -11,7 +11,7 @@
     "all_frames": true,
     "run_at": "document_end",
     "matches": ["<all_urls>"],
-    "js": ["${HIGHLIGHTER_PATH}/highlighter.js"]
+    "js": ["${CONTENT_SCRIPT_PATH}/highlighter.js"]
   }],
   "browser_specific_settings": {
     "gecko": {
