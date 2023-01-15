@@ -1,6 +1,6 @@
 {
   "name": "selection_highlighter",
-  "version": "2.43",
+  "version": "3.0.0",
   "description": "browser highlighter for code analysis",
   "scripts": {
     "build": "rm -rf dist; webpack --config webpack.config.js",

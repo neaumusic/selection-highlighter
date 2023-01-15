@@ -24,12 +24,12 @@ export async function addStyleElement() {
     .${scrollMarkersClassName()} {
       height: 2px;
       width: 16px;
-      boxSizing: content-box;
+      box-sizing: content-box;
       border: 1px solid grey;
       position: fixed;
       right: 0px;
-      backgroundColor: yellow;
-      zIndex: 2147483647;
+      background-color: yellow;
+      z-index: 2147483647;
     }
   `;
   return new Promise((resolve) => {

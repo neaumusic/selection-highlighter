@@ -9,6 +9,7 @@ import {
   highlightName,
   highlightStyles,
   areScrollMarkersEnabled,
+  scrollMarkersTimeout,
   scrollMarkersClassName,
   scrollMarkerStyles,
 } from "../options/options";
@@ -50,10 +51,12 @@ function onSelectionChange(e) {
   highlight(runNumber);
 
   requestAnimationFrame(() => {
-    removeScrollMarkers();
+    removeScrollMarkers(runNumber);
   });
 
-  addScrollMarkers(runNumber);
+  setTimeout(() => {
+    addScrollMarkers(runNumber);
+  }, scrollMarkersTimeout);
 }
 
 function highlight(runNumber) {
@@ -176,38 +179,44 @@ function highlight(runNumber) {
   }
 }
 
-function removeScrollMarkers() {
+function removeScrollMarkers(runNumber) {
   if (areScrollMarkersEnabled()) {
     document
       .querySelectorAll("." + scrollMarkersClassName())
       .forEach((element) => {
-        element.remove();
+        requestAnimationFrame(() => {
+          if (runNumber === latestRunNumber) {
+            element.remove();
+          }
+        });
       });
   }
 }
 
 function addScrollMarkers(runNumber) {
+  if (runNumber !== latestRunNumber) return;
+
   if (areScrollMarkersEnabled()) {
     const scrollMarkersFragment = document.createDocumentFragment();
 
     for (let highlightedNode of highlights) {
-      if (runNumber !== latestRunNumber) {
-        console.log("not latest run number");
-        return;
-      }
-      const scrollMarker = document.createElement("div");
-      scrollMarker.className = scrollMarkersClassName();
-      const styles = scrollMarkerStyles({
-        window,
-        document,
-        highlightedNode,
+      requestAnimationFrame(() => {
+        if (runNumber === latestRunNumber) {
+          const scrollMarker = document.createElement("div");
+          scrollMarker.className = scrollMarkersClassName();
+          const styles = scrollMarkerStyles({
+            window,
+            document,
+            highlightedNode,
+          });
+          if (styles) {
+            Object.entries(styles).forEach(([styleName, styleValue]) => {
+              scrollMarker.style[styleName] = styleValue;
+            });
+            scrollMarkersFragment.appendChild(scrollMarker);
+          }
+        }
       });
-      if (styles) {
-        Object.entries(styles).forEach(([styleName, styleValue]) => {
-          scrollMarker.style[styleName] = styleValue;
-        });
-        scrollMarkersFragment.appendChild(scrollMarker);
-      }
     }
 
     requestAnimationFrame(() => {
