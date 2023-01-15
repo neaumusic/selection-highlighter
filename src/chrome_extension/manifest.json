@@ -3,17 +3,18 @@
   "name": "Selection Highlighter",
   "version": "${PACKAGE_VERSION}",
   "description": "Highlight occurrences of selected text, with or without a keypress.",
-  "options_page": "${OPTIONS_PAGE_PATH}/options_page.html",
   "content_scripts": [
     {
       "all_frames": true,
       "run_at": "document_end",
       "matches": ["<all_urls>"],
-      "js": ["${CONTENT_SCRIPT_PATH}/main.js"]
+      "js": ["${CONTENT_SCRIPT_PATH}/highlighter.js"]
     }
   ],
-  "browser_action": {
-    "default_icon": "${IMAGES_PATH}/icon.png"
+  "action": {
+    "default_icon": "${IMAGES_PATH}/icon.png",
+    "default_title": "Selection Highlighter",
+    "default_popup": "${POPUP_PATH}/popup.html"
   },
   "icons": {
     "1024": "${IMAGES_PATH}/icon.png"
