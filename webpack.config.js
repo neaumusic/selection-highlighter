@@ -82,10 +82,13 @@ const content_script = ({ outputDirectory }) => ({
 });
 
 const popup = ({ outputDirectory }) => ({
-  entry: "./src/popup/index.js",
+  entry: "./src/popup/main.js",
   output: {
     path: path.resolve(__dirname, `${ROOT}/${outputDirectory}/${POPUP_PATH}`),
   },
+  // optimization: {
+  //   minimize: true,
+  // },
   module: {
     rules: [
       {
@@ -97,7 +100,10 @@ const popup = ({ outputDirectory }) => ({
           {
             loader: "babel-loader",
             options: {
-              presets: ["@babel/preset-typescript", "@babel/preset-react"],
+              presets: [
+                "@babel/preset-typescript",
+                ["@babel/preset-react", { runtime: "automatic" }],
+              ],
             },
           },
         ],
@@ -118,7 +124,6 @@ const popup = ({ outputDirectory }) => ({
   },
   plugins: [
     new HtmlWebPackPlugin({
-      filename: "popup.html",
       title: "Selection Highlighter Options",
     }),
   ],

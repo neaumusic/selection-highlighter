@@ -14,7 +14,7 @@
   "action": {
     "default_icon": "${IMAGES_PATH}/icon.png",
     "default_title": "Selection Highlighter",
-    "default_popup": "${POPUP_PATH}/popup.html"
+    "default_popup": "${POPUP_PATH}/index.html"
   },
   "icons": {
     "1024": "${IMAGES_PATH}/icon.png"
