@@ -15,7 +15,7 @@ import {
 
 export async function addStyleElement() {
   const style = document.createElement("style");
-  style.innerHTML = `
+  style.textContent = `
     ::highlight(${highlightName()}) {
       ${Object.entries(highlightStyles())
         .map(([styleName, styleValue]) => `${styleName}: ${styleValue};`)

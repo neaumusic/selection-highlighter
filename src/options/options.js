@@ -1,5 +1,5 @@
 // from chrome.storage
-const minSelectionString = 3;
+const minSelectionString = 1;
 const denyListedHosts = [];
 const gateKeys = []; // 'Meta' CMD, 'Alt' Option
 const matchWholeWord = false;
@@ -8,7 +8,7 @@ const highlightStylesObject = {
   "background-color": "rgb(255,255,0,1)", // yellow 100%
 };
 const enableScrollMarkers = true;
-const scrollMarkersDebounce = 200;
+const scrollMarkersDebounce = 600;
 
 export async function fetchOptions() {
   return Promise.resolve();

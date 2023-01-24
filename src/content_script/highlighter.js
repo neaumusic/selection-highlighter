@@ -50,9 +50,7 @@ function onSelectionChange(e) {
   highlights.clear();
   highlight(runNumber);
 
-  requestAnimationFrame(() => {
-    removeScrollMarkers(runNumber);
-  });
+  removeScrollMarkers(runNumber);
 
   setTimeout(() => {
     addScrollMarkers(runNumber);
@@ -181,15 +179,15 @@ function highlight(runNumber) {
 
 function removeScrollMarkers(runNumber) {
   if (areScrollMarkersEnabled()) {
-    document
-      .querySelectorAll("." + scrollMarkersClassName())
-      .forEach((element) => {
-        requestAnimationFrame(() => {
-          if (runNumber === latestRunNumber) {
-            element.remove();
-          }
-        });
+    for (let element of document.querySelectorAll(
+      "." + scrollMarkersClassName()
+    )) {
+      requestAnimationFrame(() => {
+        if (runNumber === latestRunNumber) {
+          element.remove();
+        }
       });
+    }
   }
 }
 
