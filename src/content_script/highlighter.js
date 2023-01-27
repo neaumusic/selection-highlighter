@@ -10,15 +10,20 @@ import {
   highlightStyles,
   areScrollMarkersEnabled,
   scrollMarkersTimeout,
-  scrollMarkersClassName,
-  scrollMarkerStyles,
+  scrollMarkersCanvasClassName,
 } from "../options/options";
-import { addPressedKeysListeners, addStyleElement } from "./utils";
+import {
+  addPressedKeysListeners,
+  addStyleElement,
+  addScrollMarkersCanvas,
+} from "./utils";
 
 let pressedKeys = [];
+let scrollMarkersCanvasContext = null;
 (async function () {
   await fetchOptions();
   await addStyleElement();
+  scrollMarkersCanvasContext = await addScrollMarkersCanvas();
   pressedKeys = addPressedKeysListeners();
   document.addEventListener("selectstart", onSelectStart);
   document.addEventListener("selectionchange", onSelectionChange);
@@ -50,11 +55,7 @@ function onSelectionChange(e) {
   highlights.clear();
   highlight(runNumber);
 
-  removeScrollMarkers(runNumber);
-
-  setTimeout(() => {
-    addScrollMarkers(runNumber);
-  }, scrollMarkersTimeout);
+  drawScrollMarkers(runNumber);
 }
 
 function highlight(runNumber) {
@@ -177,50 +178,54 @@ function highlight(runNumber) {
   }
 }
 
-function removeScrollMarkers(runNumber) {
-  if (areScrollMarkersEnabled()) {
-    for (let element of document.querySelectorAll(
-      "." + scrollMarkersClassName()
-    )) {
-      requestAnimationFrame(() => {
-        if (runNumber === latestRunNumber) {
-          element.remove();
-        }
-      });
-    }
-  }
-}
-
-function addScrollMarkers(runNumber) {
+function drawScrollMarkers(runNumber) {
   if (runNumber !== latestRunNumber) return;
+  requestAnimationFrame(() => {
+    scrollMarkersCanvasContext.clearRect(
+      0,
+      0,
+      scrollMarkersCanvasContext.canvas.width,
+      scrollMarkersCanvasContext.canvas.height
+    );
+  });
 
   if (areScrollMarkersEnabled()) {
-    const scrollMarkersFragment = document.createDocumentFragment();
-
     for (let highlightedNode of highlights) {
       requestAnimationFrame(() => {
+        const dpr = devicePixelRatio || 1;
         if (runNumber === latestRunNumber) {
-          const scrollMarker = document.createElement("div");
-          scrollMarker.className = scrollMarkersClassName();
-          const styles = scrollMarkerStyles({
-            window,
-            document,
-            highlightedNode,
-          });
-          if (styles) {
-            Object.entries(styles).forEach(([styleName, styleValue]) => {
-              scrollMarker.style[styleName] = styleValue;
-            });
-            scrollMarkersFragment.appendChild(scrollMarker);
+          const clientRect = highlightedNode.getBoundingClientRect();
+          if (!clientRect.width || !clientRect.height) {
+            console.log("not a highlight", highlightedNode);
+            return false;
           }
+
+          // window height times percent of element position in document
+          const top =
+            (window.innerHeight *
+              (window.scrollY +
+                clientRect.top +
+                0.5 * (clientRect.top - clientRect.bottom))) /
+            document.documentElement.scrollHeight;
+
+          scrollMarkersCanvasContext.beginPath();
+          scrollMarkersCanvasContext.lineWidth = "1" * dpr;
+          scrollMarkersCanvasContext.strokeStyle = "grey";
+          scrollMarkersCanvasContext.fillStyle = "yellow";
+          scrollMarkersCanvasContext.strokeRect(
+            0.5 * dpr,
+            (top + 0.5) * dpr,
+            15 * dpr,
+            3 * dpr
+          );
+          scrollMarkersCanvasContext.fillRect(
+            1 * dpr,
+            (top + 1) * dpr,
+            14 * dpr,
+            2 * dpr
+          );
         }
       });
     }
-
-    requestAnimationFrame(() => {
-      if (runNumber === latestRunNumber) {
-        document.body.appendChild(scrollMarkersFragment);
-      }
-    });
   }
 }

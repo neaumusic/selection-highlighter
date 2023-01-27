@@ -6,9 +6,9 @@ const matchWholeWord = false;
 const matchCaseSensitive = false;
 const highlightStylesObject = {
   "background-color": "rgb(255,255,0,1)", // yellow 100%
+  color: "black",
 };
 const enableScrollMarkers = true;
-const scrollMarkersDebounce = 600;
 
 export async function fetchOptions() {
   return Promise.resolve();
@@ -60,23 +60,6 @@ export function areScrollMarkersEnabled() {
 export function scrollMarkersTimeout() {
   return scrollMarkersDebounce;
 }
-export function scrollMarkersClassName() {
-  return "selection_highlighter_scroll_marker";
-}
-export function scrollMarkerStyles({ window, document, highlightedNode }) {
-  const clientRect = highlightedNode.getBoundingClientRect();
-  if (!clientRect.width || !clientRect.height) {
-    return false;
-  }
-
-  return {
-    // window height times percent of element position in document
-    top:
-      (window.innerHeight *
-        (window.scrollY +
-          clientRect.top +
-          0.5 * (clientRect.top - clientRect.bottom))) /
-        document.documentElement.scrollHeight +
-      "px",
-  };
+export function scrollMarkersCanvasClassName() {
+  return "selection_highlighter_scroll_markers";
 }

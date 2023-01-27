@@ -9,8 +9,7 @@ import {
   highlightName,
   highlightStyles,
   areScrollMarkersEnabled,
-  scrollMarkersClassName,
-  scrollMarkerStyles,
+  scrollMarkersCanvasClassName,
 } from "../options/options";
 
 export async function addStyleElement() {
@@ -21,21 +20,39 @@ export async function addStyleElement() {
         .map(([styleName, styleValue]) => `${styleName}: ${styleValue};`)
         .join("\n      ")}
     }
-    .${scrollMarkersClassName()} {
-      height: 2px;
-      width: 16px;
-      box-sizing: content-box;
-      border: 1px solid grey;
+    .${scrollMarkersCanvasClassName()} {
+      pointer-events: none;
       position: fixed;
-      right: 0px;
-      background-color: yellow;
       z-index: 2147483647;
+      top: 0;
+      right: 0;
+      width: 16px;
+      height: 100vh;
     }
   `;
   return new Promise((resolve) => {
     requestAnimationFrame(() => {
       document.body.appendChild(style);
       resolve();
+    });
+  });
+}
+
+export async function addScrollMarkersCanvas() {
+  const scrollMarkersCanvas = document.createElement("canvas");
+  scrollMarkersCanvas.className = scrollMarkersCanvasClassName();
+  scrollMarkersCanvas.width = "16" * devicePixelRatio || 1;
+  scrollMarkersCanvas.height = window.innerHeight * devicePixelRatio || 1;
+
+  window.addEventListener("resize", () => {
+    requestAnimationFrame(() => {
+      scrollMarkersCanvas.height = window.innerHeight * devicePixelRatio || 1;
+    });
+  });
+  return new Promise((resolve) => {
+    requestAnimationFrame(() => {
+      document.body.appendChild(scrollMarkersCanvas);
+      resolve(scrollMarkersCanvas.getContext("2d"));
     });
   });
 }
