@@ -1,33 +1,35 @@
 @media (prefers-color-scheme: dark) {
-  html, body {
-    background-color: rgb(41,42,45) !important;
+  html,
+  body {
+    background-color: rgb(41, 42, 45) !important;
   }
   textarea#options-text {
-    background-color: rgb(41,42,45) !important;
-    color: #C8C8C8 !important;
+    background-color: rgb(41, 42, 45) !important;
+    color: #c8c8c8 !important;
   }
   #buttons-row {
-    border-top: 0.0625rem solid #C8C8C8 !important;
-    background-color: rgb(41,42,45) !important;
+    border-top: 0.0625rem solid #c8c8c8 !important;
+    background-color: rgb(41, 42, 45) !important;
   }
   button {
-    color: #C8C8C8 !important;
+    color: #c8c8c8 !important;
   }
   ::-webkit-scrollbar {
-    background-color: #1B1B18;
+    background-color: #1b1b18;
   }
   ::-webkit-scrollbar-thumb {
-    background-color: #3B3933;
+    background-color: #3b3933;
   }
   ::-webkit-scrollbar-corner {
-    background-color: #1B1B18;
+    background-color: #1b1b18;
   }
 }
 
 * {
   box-sizing: border-box;
 }
-body, html {
+body,
+html {
   margin: 0;
   padding: 0;
 }
@@ -41,14 +43,14 @@ textarea#options-text {
   flex: 1 1 30rem;
   border: none;
   outline: none;
-  background-color: #F0F0F0;
+  background-color: #f0f0f0;
   font-size: 0.875rem;
   font-family: Monaco;
 }
 #buttons-row {
   width: 100%;
   border-top: 0.0625rem solid grey;
-  background-color: #F0F0F0;
+  background-color: #f0f0f0;
   display: flex;
   justify-content: space-between;
 }
@@ -63,7 +65,7 @@ textarea#options-text {
 #right {
   flex: 1 0;
   display: flex;
-  justify-content: flex-end
+  justify-content: flex-end;
 }
 #donation-button-form {
   display: flex;
@@ -71,7 +73,7 @@ textarea#options-text {
 }
 #donation-button-input {
   height: 2rem;
-  padding:  0.25rem 0.5rem;
+  padding: 0.25rem 0.5rem;
 }
 button {
   transition: opacity 0.25s;
