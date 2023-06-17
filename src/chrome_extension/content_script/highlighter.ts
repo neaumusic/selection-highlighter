@@ -60,17 +60,19 @@ function onSelectionChange() {
   highlight(runNumber);
 
   requestAnimationFrame(() => {
+    if (runNumber !== latestRunNumber) return;
+
     scrollMarkersCanvasContext.clearRect(
       0,
       0,
       scrollMarkersCanvasContext.canvas.width,
       scrollMarkersCanvasContext.canvas.height
     );
+    clearTimeout(drawMarkersTimeout);
+    drawMarkersTimeout = window.setTimeout(() => {
+      drawScrollMarkers(runNumber);
+    }, scrollMarkersDebounce());
   });
-  clearTimeout(drawMarkersTimeout);
-  drawMarkersTimeout = window.setTimeout(() => {
-    drawScrollMarkers(runNumber);
-  }, scrollMarkersDebounce());
 }
 
 function highlight(runNumber: number) {
@@ -198,6 +200,8 @@ function highlight(runNumber: number) {
 }
 
 function drawScrollMarkers(runNumber: number) {
+  if (runNumber !== latestRunNumber) return;
+
   if (areScrollMarkersEnabled()) {
     for (let highlightedNode of highlights) {
       requestAnimationFrame(() => {
