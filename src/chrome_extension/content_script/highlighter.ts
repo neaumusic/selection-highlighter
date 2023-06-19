@@ -113,88 +113,104 @@ function highlight(runNumber: number) {
     if (!isAncestorNodeValid(textNode.parentNode)) return;
 
     const matchIndex = match.index;
-    const anchorToFocusDirection = selection.anchorNode.compareDocumentPosition(
-      selection.focusNode
-    );
-
-    function isSelectionAcrossNodesLeftToRight() {
-      return anchorToFocusDirection & Node.DOCUMENT_POSITION_FOLLOWING;
-    }
-
-    function isSelectionAcrossNodesRightToLeft() {
-      return anchorToFocusDirection & Node.DOCUMENT_POSITION_PRECEDING;
-    }
-
-    function isUsersSelection() {
-      if (isSelectionAcrossNodesLeftToRight()) {
-        if (textNode === selection.anchorNode) {
-          return (
-            (selection.anchorNode.nodeType === Node.ELEMENT_NODE &&
-              selection.anchorOffset === 0) ||
-            selection.anchorOffset <= matchIndex - leadingSpaces.length
-          );
-        } else if (textNode === selection.focusNode) {
-          return (
-            (selection.focusNode.nodeType === Node.ELEMENT_NODE &&
-              selection.focusOffset === 0) ||
-            selection.focusOffset >=
-              matchIndex + selectionString.length + trailingSpaces.length
-          );
-        } else {
-          return (
-            selection.anchorNode.compareDocumentPosition(textNode) &
-              Node.DOCUMENT_POSITION_FOLLOWING &&
-            selection.focusNode.compareDocumentPosition(textNode) &
-              Node.DOCUMENT_POSITION_PRECEDING
-          );
-        }
-      } else if (isSelectionAcrossNodesRightToLeft()) {
-        if (textNode === selection.anchorNode) {
-          return (
-            (selection.anchorNode.nodeType === Node.ELEMENT_NODE &&
-              selection.anchorOffset === 0) ||
-            selection.anchorOffset >=
-              matchIndex + selectionString.length + trailingSpaces.length
-          );
-        } else if (textNode === selection.focusNode) {
-          return (
-            (selection.focusNode.nodeType === Node.ELEMENT_NODE &&
-              selection.focusOffset === 0) ||
-            selection.focusOffset <= matchIndex - leadingSpaces.length
-          );
-        } else {
-          return (
-            selection.anchorNode.compareDocumentPosition(textNode) &
-              Node.DOCUMENT_POSITION_PRECEDING &&
-            selection.focusNode.compareDocumentPosition(textNode) &
-              Node.DOCUMENT_POSITION_FOLLOWING
-          );
-        }
-      } else {
-        if (selection.anchorOffset < selection.focusOffset) {
-          return (
-            textNode === selection.anchorNode &&
-            selection.anchorOffset <= matchIndex - leadingSpaces.length &&
-            selection.focusOffset >=
-              matchIndex + selectionString.length + trailingSpaces.length
-          );
-        } else if (selection.anchorOffset > selection.focusOffset) {
-          return (
-            textNode === selection.focusNode &&
-            selection.focusOffset <= matchIndex - leadingSpaces.length &&
-            selection.anchorOffset >=
-              matchIndex + selectionString.length + trailingSpaces.length
-          );
-        }
-      }
-    }
-
-    if (!isUsersSelection()) {
+    if (
+      !isUsersSelection(
+        selection,
+        textNode,
+        matchIndex,
+        leadingSpaces,
+        selectionString,
+        trailingSpaces
+      )
+    ) {
       const range = new Range();
       range.selectNode(textNode);
       range.setStart(textNode, matchIndex);
       range.setEnd(textNode, matchIndex + selectionString.length);
       highlights.add(range);
+    }
+  }
+}
+
+function isUsersSelection(
+  selection: SelectionWithAnchorAndFocusNodes,
+  textNode: Text,
+  matchIndex: number,
+  leadingSpaces: string,
+  selectionString: string,
+  trailingSpaces: string
+) {
+  const anchorToFocusDirection = selection.anchorNode.compareDocumentPosition(
+    selection.focusNode
+  );
+
+  function isSelectionAcrossNodesLeftToRight() {
+    return anchorToFocusDirection & Node.DOCUMENT_POSITION_FOLLOWING;
+  }
+
+  function isSelectionAcrossNodesRightToLeft() {
+    return anchorToFocusDirection & Node.DOCUMENT_POSITION_PRECEDING;
+  }
+
+  if (isSelectionAcrossNodesLeftToRight()) {
+    if (textNode === selection.anchorNode) {
+      return (
+        (selection.anchorNode.nodeType === Node.ELEMENT_NODE &&
+          selection.anchorOffset === 0) ||
+        selection.anchorOffset <= matchIndex - leadingSpaces.length
+      );
+    } else if (textNode === selection.focusNode) {
+      return (
+        (selection.focusNode.nodeType === Node.ELEMENT_NODE &&
+          selection.focusOffset === 0) ||
+        selection.focusOffset >=
+          matchIndex + selectionString.length + trailingSpaces.length
+      );
+    } else {
+      return (
+        selection.anchorNode.compareDocumentPosition(textNode) &
+          Node.DOCUMENT_POSITION_FOLLOWING &&
+        selection.focusNode.compareDocumentPosition(textNode) &
+          Node.DOCUMENT_POSITION_PRECEDING
+      );
+    }
+  } else if (isSelectionAcrossNodesRightToLeft()) {
+    if (textNode === selection.anchorNode) {
+      return (
+        (selection.anchorNode.nodeType === Node.ELEMENT_NODE &&
+          selection.anchorOffset === 0) ||
+        selection.anchorOffset >=
+          matchIndex + selectionString.length + trailingSpaces.length
+      );
+    } else if (textNode === selection.focusNode) {
+      return (
+        (selection.focusNode.nodeType === Node.ELEMENT_NODE &&
+          selection.focusOffset === 0) ||
+        selection.focusOffset <= matchIndex - leadingSpaces.length
+      );
+    } else {
+      return (
+        selection.anchorNode.compareDocumentPosition(textNode) &
+          Node.DOCUMENT_POSITION_PRECEDING &&
+        selection.focusNode.compareDocumentPosition(textNode) &
+          Node.DOCUMENT_POSITION_FOLLOWING
+      );
+    }
+  } else {
+    if (selection.anchorOffset < selection.focusOffset) {
+      return (
+        textNode === selection.anchorNode &&
+        selection.anchorOffset <= matchIndex - leadingSpaces.length &&
+        selection.focusOffset >=
+          matchIndex + selectionString.length + trailingSpaces.length
+      );
+    } else if (selection.anchorOffset > selection.focusOffset) {
+      return (
+        textNode === selection.focusNode &&
+        selection.focusOffset <= matchIndex - leadingSpaces.length &&
+        selection.anchorOffset >=
+          matchIndex + selectionString.length + trailingSpaces.length
+      );
     }
   }
 }
