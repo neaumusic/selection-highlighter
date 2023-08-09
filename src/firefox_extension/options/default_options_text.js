@@ -62,6 +62,7 @@ export const defaultOptionsText = `({
 
   styles: {
     backgroundColor: 'rgb(255,255,0,1)', // yellow 100%
+    color: 'rgba(0,0,0,1)', // black 100%
     margin: '0',
     padding: '0',
     // lineHeight: '1',
