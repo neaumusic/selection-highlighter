@@ -63,6 +63,15 @@ const FormContainer = styled.form`
   display: flex;
   flex-direction: column;
   background: lightgrey;
+
+  @media (prefers-color-scheme: dark) {
+    background-color: rgb(41, 42, 45) !important;
+    color: #c8c8c8 !important;
+    * {
+      background-color: rgb(41, 42, 45) !important;
+      color: #c8c8c8 !important;
+    }
+  }
 `;
 export const VerticalLabel = styled.label`
   display: flex;
@@ -77,7 +86,6 @@ export const HorizontalLabel = styled.label`
 export const CheckboxInput = styled.input`
   width: 20px;
   height: 20px;
-  box-sizing: border-box;
 `;
 export const TextAreaWithStatus = styled.textarea`
   ${({ error }: { error: boolean }) => error && "border-color: red"};

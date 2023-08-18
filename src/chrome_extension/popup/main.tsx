@@ -11,7 +11,17 @@ createRoot(root).render(
       styles={css`
         html,
         body {
-          all: initial;
+          padding: 0;
+          margin: 0;
+          box-sizing: border-box;
+        }
+        @media (prefers-color-scheme: dark) {
+          background-color: rgb(41, 42, 45) !important;
+          color: #c8c8c8 !important;
+          * {
+            background-color: rgb(41, 42, 45) !important;
+            color: #c8c8c8 !important;
+          }
         }
       `}
     />
