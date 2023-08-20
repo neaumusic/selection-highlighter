@@ -3,9 +3,10 @@
   "version": "3.0.0",
   "description": "browser highlighter for code analysis",
   "scripts": {
-    "build": "rm -rf dist; webpack --config webpack.config.js",
-    "postinstall": "rm -rf dist; webpack --config webpack.config.js",
-    "watch": "rm -rf dist; webpack --watch --config webpack.config.js"
+    "build": "rm -rf build dist; webpack --config webpack.config.js",
+    "build:safari": "src/safari_extension/convert.sh",
+    "postinstall": "rm -rf build dist; webpack --config webpack.config.js",
+    "watch": "rm -rf build dist; webpack --watch --config webpack.config.js"
   },
   "repository": {
     "type": "git",

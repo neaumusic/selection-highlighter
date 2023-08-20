@@ -13,189 +13,6 @@ const POPUP_PATH = `popup`;
 const OPTIONS_UI_PATH = `options_ui`;
 const IMAGES_PATH = `images`;
 
-const manifest = ({ entry, outputDirectory }) => ({
-  entry: entry,
-  output: {
-    path: path.resolve(__dirname, outputDirectory),
-    filename: `DELETED.js`,
-  },
-  plugins: [
-    new CleanWebpackPlugin(),
-    new CopyWebpackPlugin({
-      patterns: [
-        {
-          from: `LICENSE.md`,
-        },
-        {
-          from: entry,
-          transform: function (manifestBuffer, path) {
-            const manifestString = manifestBuffer
-              .toString()
-              .replace(/\$\{OPTIONS_UI_PATH\}/g, OPTIONS_UI_PATH)
-              .replace(/\$\{IMAGES_PATH\}/g, IMAGES_PATH)
-              .replace(/\$\{PACKAGE_VERSION\}/g, PACKAGE_VERSION)
-              .replace(/\$\{POPUP_PATH\}/g, POPUP_PATH)
-              .replace(/\$\{CONTENT_SCRIPT_PATH\}/g, CONTENT_SCRIPT_PATH);
-            return Buffer.from(manifestString);
-          },
-        },
-        {
-          from: `src/images/icon.png`,
-          to: IMAGES_PATH,
-        },
-      ],
-    }),
-    new RemoveFilesWebpackPlugin({
-      after: {
-        log: false,
-        include: [`${outputDirectory}/DELETED.js`],
-      },
-    }),
-  ],
-  stats: true,
-  mode: `none`,
-});
-
-const content_script = ({ entry, outputDirectory }) => ({
-  entry: entry,
-  output: {
-    path: path.resolve(__dirname, outputDirectory),
-    // filename: `highlighter.js`,
-  },
-  module: {
-    rules: [
-      {
-        resolve: {
-          extensions: [`.js`, `.jsx`, `.ts`, `.tsx`],
-        },
-        test: /\.(js|jsx|ts|tsx)$/i,
-        use: [
-          {
-            loader: `babel-loader`,
-            options: {
-              presets: [
-                `@babel/preset-typescript`,
-                [`@babel/preset-react`, { runtime: `automatic` }],
-              ],
-            },
-          },
-        ],
-      },
-    ],
-  },
-  stats: true,
-  mode: `none`,
-});
-
-const popup = ({ entry, outputDirectory }) => ({
-  entry: entry,
-  output: {
-    path: path.resolve(__dirname, outputDirectory),
-  },
-  // optimization: {
-  //   minimize: true,
-  // },
-  module: {
-    rules: [
-      {
-        resolve: {
-          extensions: [`.js`, `.jsx`, `.ts`, `.tsx`],
-        },
-        test: /\.(js|jsx|ts|tsx)$/i,
-        use: [
-          {
-            loader: `babel-loader`,
-            options: {
-              presets: [
-                `@babel/preset-typescript`,
-                [`@babel/preset-react`, { runtime: `automatic` }],
-              ],
-            },
-          },
-        ],
-      },
-      {
-        test: /\.(jpg|jpeg|png|gif|eot|otf|svg|ttf|woff|woff2)$/i,
-        use: [
-          {
-            loader: `file-loader`,
-            options: {
-              esModule: false,
-              name: `[name].[ext]`,
-            },
-          },
-        ],
-      },
-    ],
-  },
-  plugins: [
-    new HtmlWebPackPlugin({
-      title: `Selection Highlighter Options`,
-    }),
-  ],
-  stats: true,
-  mode: `none`,
-});
-
-const options_ui = ({ entry, outputDirectory }) => ({
-  entry: entry,
-  output: {
-    path: path.resolve(__dirname, outputDirectory),
-  },
-  module: {
-    rules: [
-      {
-        test: /\.js$/i,
-        use: [
-          {
-            loader: "babel-loader",
-          },
-        ],
-      },
-      {
-        test: /\.html$/i,
-        use: [
-          {
-            loader: "html-loader",
-          },
-        ],
-      },
-      {
-        test: /\.css$/i,
-        use: [
-          {
-            loader: "file-loader",
-            options: {
-              esModule: false,
-              name: "styles.css",
-            },
-          },
-        ],
-      },
-      {
-        test: /\.(jpg|jpeg|png|gif|eot|otf|svg|ttf|woff|woff2)$/i,
-        use: [
-          {
-            loader: "file-loader",
-            options: {
-              esModule: false,
-              name: "[name].[ext]",
-            },
-          },
-        ],
-      },
-    ],
-  },
-  plugins: [
-    new HtmlWebPackPlugin({
-      template: "./src/firefox_extension/options_ui/options_ui.html",
-      title: "Selection Highlighter Options",
-    }),
-  ],
-  stats: true,
-  mode: "none",
-});
-
 module.exports = [
   // chrome
   manifest({
@@ -224,4 +41,209 @@ module.exports = [
     entry: `./src/firefox_extension/${OPTIONS_UI_PATH}/options_ui.js`,
     outputDirectory: `dist/firefox_extension/${OPTIONS_UI_PATH}`,
   }),
+
+  // safari
+  manifest({
+    entry: `./src/safari_extension/manifest.json`,
+    outputDirectory: `./build/safari_extension/`,
+  }),
+  content_script({
+    entry: `./src/safari_extension/${CONTENT_SCRIPT_PATH}/highlighter.js`,
+    outputDirectory: `./build/safari_extension/${CONTENT_SCRIPT_PATH}`,
+  }),
+  options_ui({
+    entry: `./src/safari_extension/${OPTIONS_UI_PATH}/options_ui.js`,
+    outputDirectory: `./build/safari_extension/${OPTIONS_UI_PATH}`,
+  }),
 ];
+
+function manifest({ entry, outputDirectory }) {
+  return {
+    entry: entry,
+    output: {
+      path: path.resolve(__dirname, outputDirectory),
+      filename: `DELETED.js`,
+    },
+    plugins: [
+      new CleanWebpackPlugin(),
+      new CopyWebpackPlugin({
+        patterns: [
+          {
+            from: `LICENSE.md`,
+          },
+          {
+            from: entry,
+            transform: function (manifestBuffer, path) {
+              const manifestString = manifestBuffer
+                .toString()
+                .replace(/\$\{OPTIONS_UI_PATH\}/g, OPTIONS_UI_PATH)
+                .replace(/\$\{IMAGES_PATH\}/g, IMAGES_PATH)
+                .replace(/\$\{PACKAGE_VERSION\}/g, PACKAGE_VERSION)
+                .replace(/\$\{POPUP_PATH\}/g, POPUP_PATH)
+                .replace(/\$\{CONTENT_SCRIPT_PATH\}/g, CONTENT_SCRIPT_PATH);
+              return Buffer.from(manifestString);
+            },
+          },
+          {
+            from: `src/images/icon.png`,
+            to: IMAGES_PATH,
+          },
+        ],
+      }),
+      new RemoveFilesWebpackPlugin({
+        after: {
+          log: false,
+          include: [`${outputDirectory}/DELETED.js`],
+        },
+      }),
+    ],
+    stats: true,
+    mode: `none`,
+  };
+}
+
+function content_script({ entry, outputDirectory }) {
+  return {
+    entry: entry,
+    output: {
+      path: path.resolve(__dirname, outputDirectory),
+      // filename: `highlighter.js`,
+    },
+    module: {
+      rules: [
+        {
+          resolve: {
+            extensions: [`.js`, `.jsx`, `.ts`, `.tsx`],
+          },
+          test: /\.(js|jsx|ts|tsx)$/i,
+          use: [
+            {
+              loader: `babel-loader`,
+              options: {
+                presets: [
+                  `@babel/preset-typescript`,
+                  [`@babel/preset-react`, { runtime: `automatic` }],
+                ],
+              },
+            },
+          ],
+        },
+      ],
+    },
+    stats: true,
+    mode: `none`,
+  };
+}
+
+function popup({ entry, outputDirectory }) {
+  return {
+    entry: entry,
+    output: {
+      path: path.resolve(__dirname, outputDirectory),
+    },
+    // optimization: {
+    //   minimize: true,
+    // },
+    module: {
+      rules: [
+        {
+          resolve: {
+            extensions: [`.js`, `.jsx`, `.ts`, `.tsx`],
+          },
+          test: /\.(js|jsx|ts|tsx)$/i,
+          use: [
+            {
+              loader: `babel-loader`,
+              options: {
+                presets: [
+                  `@babel/preset-typescript`,
+                  [`@babel/preset-react`, { runtime: `automatic` }],
+                ],
+              },
+            },
+          ],
+        },
+        {
+          test: /\.(jpg|jpeg|png|gif|eot|otf|svg|ttf|woff|woff2)$/i,
+          use: [
+            {
+              loader: `file-loader`,
+              options: {
+                esModule: false,
+                name: `[name].[ext]`,
+              },
+            },
+          ],
+        },
+      ],
+    },
+    plugins: [
+      new HtmlWebPackPlugin({
+        title: `Selection Highlighter Options`,
+      }),
+    ],
+    stats: true,
+    mode: `none`,
+  };
+}
+
+function options_ui({ entry, outputDirectory }) {
+  return {
+    entry: entry,
+    output: {
+      path: path.resolve(__dirname, outputDirectory),
+    },
+    module: {
+      rules: [
+        {
+          test: /\.js$/i,
+          use: [
+            {
+              loader: "babel-loader",
+            },
+          ],
+        },
+        {
+          test: /\.html$/i,
+          use: [
+            {
+              loader: "html-loader",
+            },
+          ],
+        },
+        {
+          test: /\.css$/i,
+          use: [
+            {
+              loader: "file-loader",
+              options: {
+                esModule: false,
+                name: "styles.css",
+              },
+            },
+          ],
+        },
+        {
+          test: /\.(jpg|jpeg|png|gif|eot|otf|svg|ttf|woff|woff2)$/i,
+          use: [
+            {
+              loader: "file-loader",
+              options: {
+                esModule: false,
+                name: "[name].[ext]",
+              },
+            },
+          ],
+        },
+      ],
+    },
+    plugins: [
+      new HtmlWebPackPlugin({
+        template: "./src/firefox_extension/options_ui/options_ui.html",
+        title: "Selection Highlighter Options",
+      }),
+    ],
+    stats: true,
+    mode: "none",
+  };
+}

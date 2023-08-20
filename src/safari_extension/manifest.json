@@ -1,0 +1,24 @@
+{
+  "manifest_version": 2,
+  "name": "Selection Highlighter",
+  "version": "${PACKAGE_VERSION}",
+  "description": "Highlight occurrences of selected text, with or without a keypress.",
+  "options_ui": {
+    "page": "${OPTIONS_UI_PATH}/index.html"
+  },
+  "content_scripts": [
+    {
+      "all_frames": true,
+      "run_at": "document_end",
+      "matches": ["<all_urls>"],
+      "js": ["${CONTENT_SCRIPT_PATH}/main.js"]
+    }
+  ],
+  "browser_action": {
+    "default_icon": "${IMAGES_PATH}/icon.png"
+  },
+  "icons": {
+    "1024": "${IMAGES_PATH}/icon.png"
+  },
+  "permissions": ["storage"]
+}
