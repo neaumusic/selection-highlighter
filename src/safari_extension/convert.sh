@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # safari-web-extension-converter
-xcrun /Applications/Xcode-beta.app/Contents/Developer/usr/bin/safari-web-extension-converter \
+xcrun safari-web-extension-converter \
 --copy-resources \
 --no-open \
 --force \
@@ -10,14 +10,14 @@ xcrun /Applications/Xcode-beta.app/Contents/Developer/usr/bin/safari-web-extensi
 "./build/safari_extension/"
 
 # macOS Safari schema
-/Applications/Xcode-beta.app/Contents/Developer/usr/bin/xcodebuild \
+xcodebuild \
 -project "./dist/safari_extension/Selection Highlighter/Selection Highlighter.xcodeproj" \
 -scheme "Selection Highlighter (macOS)" \
 -configuration Release \
 build
 
 # iOS Safari schema
-/Applications/Xcode-beta.app/Contents/Developer/usr/bin/xcodebuild \
+xcodebuild \
 -project "./dist/safari_extension/Selection Highlighter/Selection Highlighter.xcodeproj" \
 -scheme "Selection Highlighter (iOS)" \
 -configuration Release \
