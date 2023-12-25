@@ -16,6 +16,9 @@
   "bugs": {
     "url": "https://github.com/neaumusic/selection-highlighter/issues"
   },
+  "volta": {
+    "node": "20.10.0"
+  },
   "homepage": "https://github.com/neaumusic/selection-highlighter#readme",
   "devDependencies": {
     "@babel/core": "^7.10.2",
