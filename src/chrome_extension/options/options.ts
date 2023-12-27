@@ -90,6 +90,10 @@ export function highlightStyles() {
   return options.highlightStylesObject;
 }
 
+export function highlightStylesDarkMode() {
+  return options.highlightStylesDarkModeObject;
+}
+
 export function areScrollMarkersEnabled() {
   return options.enableScrollMarkers;
 }

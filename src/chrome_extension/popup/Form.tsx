@@ -5,6 +5,7 @@ import { BadHosts } from "./sections/BadHosts";
 import { ScrollMarkers } from "./sections/ScrollMarkers";
 import { GateKeys } from "./sections/GateKeys";
 import { HighlightStyles } from "./sections/HighlightStyles";
+import { HighlightStylesDarkMode } from "./sections/HighlightStylesDarkMode";
 import { CaseSensitive } from "./sections/CaseSensitive";
 import { WholeWord } from "./sections/WholeWord";
 import { MinimumLength } from "./sections/MinimumLength";
@@ -39,6 +40,7 @@ export const Form: React.FC = () => {
       <GateKeys options={options} setOptions={setOptions} />
       <BadHosts options={options} setOptions={setOptions} />
       <HighlightStyles options={options} setOptions={setOptions} />
+      <HighlightStylesDarkMode options={options} setOptions={setOptions} />
       <ScrollMarkers options={options} setOptions={setOptions} />
       <ScrollMarkersDebounce options={options} setOptions={setOptions} />
       <FormButtons>

@@ -1,16 +1,24 @@
 import {
   highlightName,
   highlightStyles,
+  highlightStylesDarkMode,
   scrollMarkersCanvasClassName,
 } from "../options/options";
 
 export async function addStyleElement() {
-  const style = document.createElement("style");
-  style.textContent = `
+  const styleElement = document.createElement("style");
+  styleElement.textContent = `
     ::highlight(${highlightName()}) {
       ${Object.entries(highlightStyles())
         .map(([styleName, styleValue]) => `${styleName}: ${styleValue};`)
         .join("\n      ")}
+    }
+    @media (prefers-color-scheme: dark) {
+      ::highlight(${highlightName()}) {
+        ${Object.entries(highlightStylesDarkMode())
+          .map(([styleName, styleValue]) => `${styleName}: ${styleValue};`)
+          .join("\n      ")}
+      }
     }
     .${scrollMarkersCanvasClassName()} {
       pointer-events: none;
@@ -24,7 +32,7 @@ export async function addStyleElement() {
   `;
   return new Promise<void>((resolve) => {
     requestAnimationFrame(() => {
-      document.body.appendChild(style);
+      document.head.appendChild(styleElement);
       resolve();
     });
   });

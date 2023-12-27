@@ -8,6 +8,10 @@ export const defaultOptions: Options = {
     "background-color": "rgba(255,255,0,1)", // yellow 100%
     color: "rgba(0,0,0,1)", // black 100%
   },
+  highlightStylesDarkModeObject: {
+    "background-color": "rgba(255,0,255,0.8)", // purple 80%
+    color: "rgba(255,255,255,1)", // white 100%
+  },
   enableScrollMarkers: true,
   scrollMarkersDebounce: 0,
 };
@@ -19,6 +23,9 @@ export interface Options {
   matchWholeWord: boolean;
   matchCaseSensitive: boolean;
   highlightStylesObject: {
+    [styleProperty: string]: string;
+  };
+  highlightStylesDarkModeObject: {
     [styleProperty: string]: string;
   };
   enableScrollMarkers: boolean;
