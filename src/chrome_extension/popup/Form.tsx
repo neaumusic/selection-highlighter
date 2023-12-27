@@ -1,6 +1,15 @@
 import styled from "@emotion/styled";
 import React, { useEffect, useState } from "react";
-import { defaultOptions, isOptions } from "../options/types";
+import {
+  Options,
+  backfillOptions,
+  defaultOptions,
+  isBoolean,
+  isNumber,
+  isOptions,
+  isStringArray,
+  isStyleObject,
+} from "../options/types";
 import { BadHosts } from "./sections/BadHosts";
 import { ScrollMarkers } from "./sections/ScrollMarkers";
 import { GateKeys } from "./sections/GateKeys";
@@ -18,6 +27,8 @@ export const Form: React.FC = () => {
     chrome.storage.sync.get(["options"], (data) => {
       if (isOptions(data.options)) {
         setOptions(data.options);
+      } else if (typeof options === "object") {
+        setOptions(backfillOptions(options));
       } else {
         setOptions(defaultOptions);
       }
@@ -27,6 +38,8 @@ export const Form: React.FC = () => {
   useEffect(() => {
     if (isOptions(options)) {
       chrome.storage.sync.set({ options });
+    } else if (typeof options === "object") {
+      chrome.storage.sync.set({ options: backfillOptions(options) });
     } else {
       chrome.storage.sync.set({ options: defaultOptions });
     }

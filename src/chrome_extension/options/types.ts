@@ -1,3 +1,35 @@
+export interface Options {
+  minSelectionString: number;
+  denyListedHosts: Array<Location["host"]>;
+  gateKeys: Array<KeyboardEvent["key"]>; // 'Meta' CMD, 'Alt' Option
+  matchWholeWord: boolean;
+  matchCaseSensitive: boolean;
+  highlightStylesObject: {
+    [styleProperty: string]: string;
+  };
+  highlightStylesDarkModeObject: {
+    [styleProperty: string]: string;
+  };
+  enableScrollMarkers: boolean;
+  scrollMarkersDebounce: number;
+}
+
+export function isOptions(options: any): options is Options {
+  return (
+    typeof options === "object" &&
+    isNumber(options.minSelectionString) &&
+    options.minSelectionString >= 1 &&
+    isStringArray(options.denyListedHosts) &&
+    isStringArray(options.gateKeys) &&
+    isBoolean(options.matchWholeWord) &&
+    isBoolean(options.matchCaseSensitive) &&
+    isStyleObject(options.highlightStylesObject) &&
+    isStyleObject(options.highlightStylesDarkModeObject) &&
+    isBoolean(options.enableScrollMarkers) &&
+    isNumber(options.scrollMarkersDebounce)
+  );
+}
+
 export const defaultOptions: Options = {
   minSelectionString: 1,
   denyListedHosts: ["foo.com", "bar.com"],
@@ -16,41 +48,51 @@ export const defaultOptions: Options = {
   scrollMarkersDebounce: 0,
 };
 
-export interface Options {
-  minSelectionString: number;
-  denyListedHosts: Array<Location["host"]>;
-  gateKeys: Array<KeyboardEvent["key"]>; // 'Meta' CMD, 'Alt' Option
-  matchWholeWord: boolean;
-  matchCaseSensitive: boolean;
-  highlightStylesObject: {
-    [styleProperty: string]: string;
-  };
-  highlightStylesDarkModeObject: {
-    [styleProperty: string]: string;
-  };
-  enableScrollMarkers: boolean;
-  scrollMarkersDebounce: number;
+export function backfillOptions(partialOptions: Partial<Options>) {
+  const backfilledOptions: Options = { ...defaultOptions };
+  if (isNumber(partialOptions.minSelectionString))
+    backfilledOptions.minSelectionString = partialOptions.minSelectionString;
+  if (isStringArray(partialOptions.denyListedHosts))
+    backfilledOptions.denyListedHosts = partialOptions.denyListedHosts;
+  if (isStringArray(partialOptions.gateKeys))
+    backfilledOptions.gateKeys = partialOptions.gateKeys;
+  if (isBoolean(partialOptions.matchWholeWord))
+    backfilledOptions.matchWholeWord = partialOptions.matchWholeWord;
+  if (isBoolean(partialOptions.matchCaseSensitive))
+    backfilledOptions.matchCaseSensitive = partialOptions.matchCaseSensitive;
+  if (isStyleObject(partialOptions.highlightStylesObject))
+    backfilledOptions.highlightStylesObject =
+      partialOptions.highlightStylesObject;
+  if (isStyleObject(partialOptions.highlightStylesDarkModeObject))
+    backfilledOptions.highlightStylesDarkModeObject =
+      partialOptions.highlightStylesDarkModeObject;
+  if (isBoolean(partialOptions.enableScrollMarkers))
+    backfilledOptions.enableScrollMarkers = partialOptions.enableScrollMarkers;
+  if (isNumber(partialOptions.scrollMarkersDebounce))
+    backfilledOptions.scrollMarkersDebounce =
+      partialOptions.scrollMarkersDebounce;
+  return backfilledOptions;
 }
 
-export function isOptions(options: any): options is Options {
-  if (
-    typeof options !== "object" ||
-    typeof options.minSelectionString !== "number" ||
-    options.minSelectionString < 1 ||
-    !Array.isArray(options.denyListedHosts) ||
-    options.denyListedHosts.some((h: any) => typeof h !== "string") ||
-    !Array.isArray(options.gateKeys) ||
-    options.gateKeys.some((g: any) => typeof g !== "string") ||
-    typeof options.matchWholeWord !== "boolean" ||
-    typeof options.matchCaseSensitive !== "boolean" ||
-    typeof options.highlightStylesObject !== "object" ||
-    Object.entries(options.highlightStylesObject).some(
-      ([k, v]) => typeof k !== "string" || typeof v !== "string"
-    ) ||
-    typeof options.enableScrollMarkers !== "boolean" ||
-    typeof options.scrollMarkersDebounce !== "number"
-  ) {
-    return false;
-  }
-  return true;
+export function isNumber(value: any): value is number {
+  return typeof value === "number";
+}
+
+export function isString(value: any): value is string {
+  return typeof value === "string";
+}
+
+export function isBoolean(value: any): value is boolean {
+  return typeof value === "boolean";
+}
+
+export function isStringArray(value: any): value is string[] {
+  return Array.isArray(value) && value.every(isString);
+}
+
+export function isStyleObject(
+  value: any
+): value is { [styleProperty: string]: string } {
+  if (typeof value !== "object") return false;
+  return Object.entries(value).every(([k, v]) => isString(k) && isString(v));
 }
