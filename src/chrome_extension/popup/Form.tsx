@@ -98,6 +98,10 @@ export const HorizontalLabel = styled.label`
   align-items: center;
   white-space: pre;
 `;
+export const LabelText = styled.h4`
+  margin: 0;
+  display: inline-block;
+`;
 export const CheckboxInput = styled.input`
   width: 20px;
   height: 20px;
@@ -112,9 +116,6 @@ const FormButtons = styled.div`
 `;
 const ResetButton = styled.button`
   flex: 0 1 0;
-`;
-const SubmitButton = styled.button`
-  flex: 1 1 0;
 `;
 const PaypalLink = styled.a`
   flex: 0 1 0;

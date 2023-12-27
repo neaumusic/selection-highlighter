@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { defaultOptions, Options } from "../../options/types";
-import { TextAreaWithStatus, VerticalLabel } from "../Form";
+import { LabelText, TextAreaWithStatus, VerticalLabel } from "../Form";
 
 type BadHostsProps = {
   options: Options;
@@ -15,10 +15,10 @@ export function BadHosts({ options, setOptions }: BadHostsProps) {
   }, [options.denyListedHosts]);
   return (
     <VerticalLabel>
-      <div>Bad Hosts: </div>
+      <LabelText>Bad Hosts: </LabelText>
       <TextAreaWithStatus
         autoCorrect="off"
-        rows={3}
+        rows={1}
         value={denyListedHostsString}
         placeholder={JSON.stringify(defaultOptions.denyListedHosts)}
         error={

@@ -1,6 +1,6 @@
 import React from "react";
 import { Options } from "../../options/types";
-import { CheckboxInput, HorizontalLabel } from "../Form";
+import { CheckboxInput, HorizontalLabel, LabelText } from "../Form";
 
 type WholeWordProps = {
   options: Options;
@@ -9,7 +9,7 @@ type WholeWordProps = {
 export function WholeWord({ options, setOptions }: WholeWordProps) {
   return (
     <HorizontalLabel>
-      <span>Whole Word: </span>
+      <LabelText>Whole Word: </LabelText>
       <CheckboxInput
         type="checkbox"
         checked={options.matchWholeWord}

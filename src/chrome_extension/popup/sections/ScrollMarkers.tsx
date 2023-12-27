@@ -1,6 +1,6 @@
 import React from "react";
 import { Options } from "../../options/types";
-import { CheckboxInput, HorizontalLabel } from "../Form";
+import { CheckboxInput, HorizontalLabel, LabelText } from "../Form";
 
 type ScrollMarkersProps = {
   options: Options;
@@ -9,7 +9,7 @@ type ScrollMarkersProps = {
 export function ScrollMarkers({ options, setOptions }: ScrollMarkersProps) {
   return (
     <HorizontalLabel>
-      <span>Scroll Markers: </span>
+      <LabelText>Scroll Markers: </LabelText>
       <CheckboxInput
         type="checkbox"
         checked={options.enableScrollMarkers}

@@ -1,6 +1,6 @@
 import React from "react";
 import { Options } from "../../options/types";
-import { HorizontalLabel } from "../Form";
+import { HorizontalLabel, LabelText } from "../Form";
 
 type ScrollMarkersDebounceProps = {
   options: Options;
@@ -12,7 +12,7 @@ export function ScrollMarkersDebounce({
 }: ScrollMarkersDebounceProps) {
   return (
     <HorizontalLabel>
-      <span>Scroll Markers Debounce: </span>
+      <LabelText>Scroll Markers Debounce: </LabelText>
       <input
         type="number"
         min={0}

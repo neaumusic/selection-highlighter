@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { defaultOptions, Options } from "../../options/types";
-import { TextAreaWithStatus, VerticalLabel } from "../Form";
+import { LabelText, TextAreaWithStatus, VerticalLabel } from "../Form";
+import { serialize } from "../utils";
 
 type HighlightStylesDarkModeProps = {
   options: Options;
@@ -11,26 +12,25 @@ export function HighlightStylesDarkMode({
   setOptions,
 }: HighlightStylesDarkModeProps) {
   const [highlightStylesDarkModeString, setHighlightStylesDarkModeString] =
-    useState(JSON.stringify(options.highlightStylesDarkModeObject));
+    useState(serialize(options.highlightStylesDarkModeObject));
   useEffect(() => {
     setHighlightStylesDarkModeString(
-      JSON.stringify(options.highlightStylesDarkModeObject)
+      serialize(options.highlightStylesDarkModeObject)
     );
   }, [options.highlightStylesDarkModeObject]);
 
   return (
     <VerticalLabel>
-      <div>Highlight Styles (Dark Mode): </div>
+      <LabelText>Highlight Styles (Dark Mode): </LabelText>
       <TextAreaWithStatus
         autoCorrect="off"
-        rows={3}
+        spellCheck="false"
+        rows={4}
         value={highlightStylesDarkModeString}
-        placeholder={JSON.stringify(
-          defaultOptions.highlightStylesDarkModeObject
-        )}
+        placeholder={serialize(defaultOptions.highlightStylesDarkModeObject)}
         error={
           highlightStylesDarkModeString !==
-          JSON.stringify(options.highlightStylesDarkModeObject)
+          serialize(options.highlightStylesDarkModeObject)
         }
         onChange={(e) => {
           setHighlightStylesDarkModeString(e.currentTarget.value);

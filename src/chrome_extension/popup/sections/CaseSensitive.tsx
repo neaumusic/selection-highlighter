@@ -1,6 +1,6 @@
 import React from "react";
 import { Options } from "../../options/types";
-import { CheckboxInput, HorizontalLabel } from "../Form";
+import { CheckboxInput, HorizontalLabel, LabelText } from "../Form";
 
 type CaseSensitiveProps = {
   options: Options;
@@ -9,7 +9,7 @@ type CaseSensitiveProps = {
 export function CaseSensitive({ options, setOptions }: CaseSensitiveProps) {
   return (
     <HorizontalLabel>
-      <span>Case Sensitive: </span>
+      <LabelText>Case Sensitive: </LabelText>
       <CheckboxInput
         type="checkbox"
         checked={options.matchCaseSensitive}

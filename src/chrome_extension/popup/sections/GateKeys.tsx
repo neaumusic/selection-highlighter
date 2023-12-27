@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Options } from "../../options/types";
-import { VerticalLabel } from "../Form";
+import { LabelText, VerticalLabel } from "../Form";
 import { usePressedKeys } from "./usePressedKeys";
 
 type GateKeysProps = {
@@ -14,7 +14,7 @@ export function GateKeys({ options, setOptions }: GateKeysProps) {
   return (
     <VerticalLabel>
       <div>
-        <span>Gate Keys: </span>
+        <LabelText>Gate Keys: </LabelText>
         <button
           type="button"
           onClick={(e) => {

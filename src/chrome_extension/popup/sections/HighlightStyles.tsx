@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { defaultOptions, Options } from "../../options/types";
-import { TextAreaWithStatus, VerticalLabel } from "../Form";
+import { LabelText, TextAreaWithStatus, VerticalLabel } from "../Form";
+import { serialize } from "../utils";
 
 type HighlightStylesProps = {
   options: Options;
@@ -8,23 +9,23 @@ type HighlightStylesProps = {
 };
 export function HighlightStyles({ options, setOptions }: HighlightStylesProps) {
   const [highlightStylesString, setHighlightStylesString] = useState(
-    JSON.stringify(options.highlightStylesObject)
+    serialize(options.highlightStylesObject)
   );
   useEffect(() => {
-    setHighlightStylesString(JSON.stringify(options.highlightStylesObject));
+    setHighlightStylesString(serialize(options.highlightStylesObject));
   }, [options.highlightStylesObject]);
 
   return (
     <VerticalLabel>
-      <div>Highlight Styles: </div>
+      <LabelText>Highlight Styles: </LabelText>
       <TextAreaWithStatus
         autoCorrect="off"
-        rows={3}
+        spellCheck="false"
+        rows={4}
         value={highlightStylesString}
-        placeholder={JSON.stringify(defaultOptions.highlightStylesObject)}
+        placeholder={serialize(defaultOptions.highlightStylesObject)}
         error={
-          highlightStylesString !==
-          JSON.stringify(options.highlightStylesObject)
+          highlightStylesString !== serialize(options.highlightStylesObject)
         }
         onChange={(e) => {
           setHighlightStylesString(e.currentTarget.value);

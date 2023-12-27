@@ -1,6 +1,6 @@
 import React from "react";
 import { Options } from "../../options/types";
-import { VerticalLabel } from "../Form";
+import { LabelText, VerticalLabel } from "../Form";
 
 type MinimumLengthProps = {
   options: Options;
@@ -10,11 +10,11 @@ export function MinimumLength({ options, setOptions }: MinimumLengthProps) {
   return (
     <VerticalLabel>
       <div>
-        <span>Minimum Length: </span>
-        <span>
+        <LabelText>Minimum Length: </LabelText>
+        <LabelText>
           {options.minSelectionString} character
           {options.minSelectionString > 1 ? "s" : ""}
-        </span>
+        </LabelText>
       </div>
       <input
         type="range"
