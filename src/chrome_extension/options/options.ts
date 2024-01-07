@@ -1,4 +1,4 @@
-import { defaultOptions, isOptions, Options } from "./types";
+import { backfillOptions, defaultOptions, isOptions, Options } from "./types";
 
 // -----------------------------------------
 //               sync options
@@ -6,21 +6,20 @@ import { defaultOptions, isOptions, Options } from "./types";
 let options: Options = defaultOptions;
 export async function initOptions(): Promise<void> {
   return new Promise((resolve) => {
-    chrome.storage.onChanged.removeListener(onChanged);
-    chrome.storage.onChanged.addListener(onChanged);
+    chrome.storage.onChanged.removeListener(setOptions);
+    chrome.storage.onChanged.addListener(setOptions);
     chrome.storage.sync.get(["options"], (data) => {
-      if (isOptions(data.options)) {
-        options = data.options;
-      } else {
-        options = defaultOptions;
-      }
+      setOptions({ options: { newValue: data.options } });
       resolve();
     });
   });
 }
-function onChanged(data: { [key: string]: chrome.storage.StorageChange }) {
-  if (isOptions(data.options.newValue)) {
-    options = data.options.newValue;
+function setOptions(data: { [key: string]: chrome.storage.StorageChange }) {
+  const { newValue } = data.options;
+  if (isOptions(newValue)) {
+    options = newValue;
+  } else if (typeof newValue === "object") {
+    options = backfillOptions(newValue);
   } else {
     options = defaultOptions;
   }
