@@ -61,6 +61,7 @@ export function occurrenceRegex(selectionString: string) {
   );
 }
 
+/** traverses up ancestors looking for any invalid */
 export function isAncestorNodeValid(ancestorNode: ParentNode | null): boolean {
   return (
     !ancestorNode ||

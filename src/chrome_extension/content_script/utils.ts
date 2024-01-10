@@ -41,14 +41,9 @@ export async function addStyleElement() {
 export async function addScrollMarkersCanvas() {
   const scrollMarkersCanvas = document.createElement("canvas");
   scrollMarkersCanvas.className = scrollMarkersCanvasClassName();
-  scrollMarkersCanvas.width = 16 * devicePixelRatio || 1;
-  scrollMarkersCanvas.height = window.innerHeight * devicePixelRatio || 1;
+  scrollMarkersCanvas.width = 16 * (devicePixelRatio || 1);
+  scrollMarkersCanvas.height = window.innerHeight * (devicePixelRatio || 1);
 
-  window.addEventListener("resize", () => {
-    requestAnimationFrame(() => {
-      scrollMarkersCanvas.height = window.innerHeight * devicePixelRatio || 1;
-    });
-  });
   return new Promise<CanvasRenderingContext2D>((resolve) => {
     requestAnimationFrame(() => {
       document.body.appendChild(scrollMarkersCanvas);

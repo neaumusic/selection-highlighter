@@ -89,7 +89,7 @@ function highlight(runNumber: number) {
 
   // https://stackoverflow.com/questions/3561493/is-there-a-regexp-escape-function-in-javascript
   const regex = occurrenceRegex(
-    selectionString.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&")
+    selectionString.replace(/[-[\]{}()*+!<=:?.\/\\^$|#\s,]/gu, "\\$&")
   );
 
   const treeWalker = document.createTreeWalker(
