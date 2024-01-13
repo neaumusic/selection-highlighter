@@ -207,11 +207,11 @@ function drawScrollMarkers(runNumber: number) {
     scrollMarkersCanvasContext.clearRect(0, 0, width, height);
   });
 
-  for (let highlightedNode of highlights) {
+  for (let range of highlights.values()) {
     requestAnimationFrame(() => {
       if (runNumber !== latestRunNumber) return;
       const dpr = devicePixelRatio || 1;
-      const clientRect = highlightedNode.getBoundingClientRect();
+      const clientRect = range.getBoundingClientRect();
       if (!clientRect.width || !clientRect.height) return;
 
       // window height times percent of element position in document
