@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Selection Highlighter",
   "version": "${PACKAGE_VERSION}",
-  "description": "Highlight occurrences of selected text, with or without a keypress.",
+  "description": "${DESCRIPTION}",
   "content_scripts": [
     {
       "all_frames": true,

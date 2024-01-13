@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Selection Highlighter",
   "version": "${PACKAGE_VERSION}",
-  "description": "Highlight occurrences of selected text, with or without a keypress.",
+  "description": "${DESCRIPTION}",
   "options_ui": {
     "page": "${OPTIONS_UI_PATH}/index.html",
     "browser_style": true

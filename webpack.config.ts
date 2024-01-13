@@ -20,6 +20,7 @@ const config: Configuration[] = [
   manifest({
     entry: `./src/chrome_extension/manifest.json`,
     outputDirectory: `dist/chrome_extension`,
+    description: `Highlight occurrences of selected text, with or without a keypress.`,
   }),
   content_script({
     entry: `./src/chrome_extension/${CONTENT_SCRIPT_PATH}/highlighter.ts`,
@@ -34,6 +35,7 @@ const config: Configuration[] = [
   manifest({
     entry: `./src/chrome_extension/manifest.json`,
     outputDirectory: `build/safari_extension`,
+    description: `Highlight occurrences of selected text.`,
   }),
   content_script({
     entry: `./src/chrome_extension/${CONTENT_SCRIPT_PATH}/highlighter.ts`,
@@ -48,6 +50,7 @@ const config: Configuration[] = [
   manifest({
     entry: `./src/firefox_extension/manifest.json`,
     outputDirectory: `dist/firefox_extension`,
+    description: `Highlight occurrences of selected text, with or without a keypress.`,
   }),
   content_script({
     entry: `./src/firefox_extension/${CONTENT_SCRIPT_PATH}/highlighter.js`,
@@ -64,8 +67,13 @@ export default config;
 type ManifestConfig = {
   entry: string;
   outputDirectory: string;
+  description: string;
 };
-function manifest({ entry, outputDirectory }: ManifestConfig): Configuration {
+function manifest({
+  entry,
+  outputDirectory,
+  description,
+}: ManifestConfig): Configuration {
   return {
     entry: entry,
     output: {
@@ -84,6 +92,7 @@ function manifest({ entry, outputDirectory }: ManifestConfig): Configuration {
             transform: function (manifestBuffer: Buffer, path: string) {
               const manifestString = manifestBuffer
                 .toString()
+                .replace(/\$\{DESCRIPTION\}/, description)
                 .replace(/\$\{OPTIONS_UI_PATH\}/g, OPTIONS_UI_PATH)
                 .replace(/\$\{IMAGES_PATH\}/g, IMAGES_PATH)
                 .replace(/\$\{PACKAGE_VERSION\}/g, PACKAGE_VERSION)
