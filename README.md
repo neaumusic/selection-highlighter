@@ -37,7 +37,7 @@ GitHub (latest release):
 GitHub (build source):
 1. Click green button "Clone Or Download", "[Download Zip](https://github.com/neaumusic/selection-highlighter/archive/master.zip)", and unzip the folder to a permanent location
 2. Run `yarn` in the root (see package.json scripts)
-    - On mac/linux use `brew install yarn` if you don't have it ([homebrew](https://brew.sh/) computer club is where Apple was founded)
+    - I recommend [volta](https://volta.sh) to install yarn, if not [brew](https://brew.sh)
 
 3. Install in browser
     - Chrome: go to `chrome://extensions`, click "Load Unpacked", select the `dist/chrome_extension` folder
