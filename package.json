@@ -1,12 +1,11 @@
 {
   "name": "selection_highlighter",
-  "version": "3.1.0",
+  "version": "3.2.0",
   "description": "browser highlighter for code analysis",
   "scripts": {
     "clean": "rm -rf build dist",
-    "build": "webpack && yarn build:safari",
-    "build:safari": "src/build_safari.sh",
-    "postinstall": "webpack",
+    "build": "webpack",
+    "build:safari": "./build_safari.sh",
     "watch": "webpack --watch"
   },
   "repository": {

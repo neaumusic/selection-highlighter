@@ -1,25 +1,16 @@
-import browser from "webextension-polyfill";
 import styled from "@emotion/styled";
 import React, { useEffect, useState } from "react";
-import {
-  Options,
-  backfillOptions,
-  defaultOptions,
-  isBoolean,
-  isNumber,
-  isOptions,
-  isStringArray,
-  isStyleObject,
-} from "../options/types";
+import browser from "webextension-polyfill";
+import { backfillOptions, defaultOptions, isOptions } from "../options/types";
 import { BadHosts } from "./sections/BadHosts";
-import { ScrollMarkers } from "./sections/ScrollMarkers";
+import { CaseSensitive } from "./sections/CaseSensitive";
 import { GateKeys } from "./sections/GateKeys";
 import { HighlightStyles } from "./sections/HighlightStyles";
 import { HighlightStylesDarkMode } from "./sections/HighlightStylesDarkMode";
-import { CaseSensitive } from "./sections/CaseSensitive";
-import { WholeWord } from "./sections/WholeWord";
 import { MinimumLength } from "./sections/MinimumLength";
+import { ScrollMarkers } from "./sections/ScrollMarkers";
 import { ScrollMarkersDebounce } from "./sections/ScrollMarkersDebounce";
+import { WholeWord } from "./sections/WholeWord";
 
 export const Form: React.FC = () => {
   const [options, setOptions] = useState(defaultOptions);

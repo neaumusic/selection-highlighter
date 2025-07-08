@@ -8,16 +8,16 @@
       "all_frames": true,
       "run_at": "document_end",
       "matches": ["<all_urls>"],
-      "js": ["${CONTENT_SCRIPT_PATH}/main.js"]
+      "js": ["content_script/main.js"]
     }
   ],
   "action": {
-    "default_icon": "${IMAGES_PATH}/icon.png",
+    "default_icon": "images/icon.png",
     "default_title": "Selection Highlighter",
-    "default_popup": "${POPUP_PATH}/index.html"
+    "default_popup": "popup/index.html"
   },
   "icons": {
-    "1024": "${IMAGES_PATH}/icon.png"
+    "1024": "images/icon.png"
   },
   "permissions": ["storage"]
 }
