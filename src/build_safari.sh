@@ -3,7 +3,9 @@
 XCODEPROJ_PATH="./dist/safari_extension/Selection Highlighter/Selection Highlighter.xcodeproj"
 
 # ONLY RUN ONCE (otherwise have to specify Signing & Capabilities -> Team in Xcode again)
+echo "Checking if Safari project exists"
 if [ ! -d "$XCODEPROJ_PATH" ]; then
+    echo "Safari project does not exist; creating it..."
     xcrun safari-web-extension-converter \
     --copy-resources \
     --no-open \
@@ -11,14 +13,18 @@ if [ ! -d "$XCODEPROJ_PATH" ]; then
     --bundle-identifier "com.neaumusic.selection-highlighter" \
     --project-location "./dist/safari_extension" \
     "./build/safari_extension/"
+else
+    echo "Retaining existing Safari project"
 fi
 
 # RUN EVERY TIME
+echo "Splicing in new files"
 rm -r "./dist/safari_extension/Selection Highlighter/Shared (Extension)/Resources/"
 cp -r \
   "./build/safari_extension/" \
   "./dist/safari_extension/Selection Highlighter/Shared (Extension)/Resources/"
-rm -r "./build/safari_extension/"
+
+echo "Safari build complete (open with Xcode and deploy to a target)"
 
 # JUST DEPLOY VIA XCODE FOR NOW (IOS // MACOS)
 # XCODE LIKES TO SIGN/DEPLOY WITH CERTIFICATES

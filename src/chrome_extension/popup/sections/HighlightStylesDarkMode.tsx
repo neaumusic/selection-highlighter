@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { defaultOptions, Options } from "../../options/types";
 import { LabelText, TextAreaWithStatus, VerticalLabel } from "../Form";
-import { serialize } from "../utils";
+import { quoteNormalized, serialize } from "../utils";
 
 type HighlightStylesDarkModeProps = {
   options: Options;
@@ -33,11 +33,12 @@ export function HighlightStylesDarkMode({
           serialize(options.highlightStylesDarkModeObject)
         }
         onChange={(e) => {
-          setHighlightStylesDarkModeString(e.currentTarget.value);
+          const value = quoteNormalized(e.currentTarget.value);
+          setHighlightStylesDarkModeString(value);
           try {
             setOptions({
               ...options,
-              highlightStylesDarkModeObject: JSON.parse(e.currentTarget.value),
+              highlightStylesDarkModeObject: JSON.parse(value),
             });
           } catch (e) {
             console.log(e);

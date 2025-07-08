@@ -1,3 +1,4 @@
+import browser from "webextension-polyfill";
 import { backfillOptions, defaultOptions, isOptions, Options } from "./types";
 
 // -----------------------------------------
@@ -6,19 +7,19 @@ import { backfillOptions, defaultOptions, isOptions, Options } from "./types";
 let options: Options = defaultOptions;
 export async function initOptions(): Promise<void> {
   return new Promise((resolve) => {
-    chrome.storage.onChanged.removeListener(setOptions);
-    chrome.storage.onChanged.addListener(setOptions);
-    chrome.storage.sync.get(["options"], (data) => {
+    browser.storage.onChanged.removeListener(setOptions);
+    browser.storage.onChanged.addListener(setOptions);
+    browser.storage.sync.get(["options"]).then((data) => {
       setOptions({ options: { newValue: data.options } });
       resolve();
     });
   });
 }
-function setOptions(data: { [key: string]: chrome.storage.StorageChange }) {
+function setOptions(data: { [key: string]: browser.Storage.StorageChange }) {
   const { newValue } = data.options;
   if (isOptions(newValue)) {
     options = newValue;
-  } else if (typeof newValue === "object") {
+  } else if (typeof newValue === "object" && newValue !== null) {
     options = backfillOptions(newValue);
   } else {
     options = defaultOptions;

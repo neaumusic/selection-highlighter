@@ -16,11 +16,12 @@ const OPTIONS_UI_PATH = `options_ui`;
 const IMAGES_PATH = `images`;
 
 const config: Configuration[] = [
-  // modern (dist/chrome)
+  // chrome
   manifest({
     entry: `./src/chrome_extension/manifest.json`,
     outputDirectory: `dist/chrome_extension`,
     description: `Highlight occurrences of selected text, with or without a keypress.`,
+    browserSpecificSettings: null,
   }),
   content_script({
     entry: `./src/chrome_extension/${CONTENT_SCRIPT_PATH}/highlighter.ts`,
@@ -31,11 +32,12 @@ const config: Configuration[] = [
     outputDirectory: `dist/chrome_extension/${POPUP_PATH}`,
   }),
 
-  // modern (build/safari)
+  // safari
   manifest({
     entry: `./src/chrome_extension/manifest.json`,
     outputDirectory: `build/safari_extension`,
     description: `Highlight occurrences of selected text.`,
+    browserSpecificSettings: null,
   }),
   content_script({
     entry: `./src/chrome_extension/${CONTENT_SCRIPT_PATH}/highlighter.ts`,
@@ -46,19 +48,24 @@ const config: Configuration[] = [
     outputDirectory: `build/safari_extension/${POPUP_PATH}`,
   }),
 
-  // legacy (dist/firefox)
+  // firefox
   manifest({
-    entry: `./src/firefox_extension/manifest.json`,
-    outputDirectory: `dist/firefox_extension`,
+    entry: `./src/chrome_extension/manifest.json`,
+    outputDirectory: `dist/chrome_extension`,
     description: `Highlight occurrences of selected text, with or without a keypress.`,
+    browserSpecificSettings: {
+      gecko: {
+        id: "{ee192302-b8b3-450e-a7f8-a3dabdccf2a8}",
+      },
+    },
   }),
   content_script({
-    entry: `./src/firefox_extension/${CONTENT_SCRIPT_PATH}/highlighter.js`,
-    outputDirectory: `dist/firefox_extension/${CONTENT_SCRIPT_PATH}`,
+    entry: `./src/chrome_extension/${CONTENT_SCRIPT_PATH}/highlighter.ts`,
+    outputDirectory: `dist/chrome_extension/${CONTENT_SCRIPT_PATH}`,
   }),
-  options_ui({
-    entry: `./src/firefox_extension/${OPTIONS_UI_PATH}/options_ui.js`,
-    outputDirectory: `dist/firefox_extension/${OPTIONS_UI_PATH}`,
+  popup({
+    entry: `./src/chrome_extension/${POPUP_PATH}/main.tsx`,
+    outputDirectory: `dist/chrome_extension/${POPUP_PATH}`,
   }),
 ];
 
@@ -68,11 +75,17 @@ type ManifestConfig = {
   entry: string;
   outputDirectory: string;
   description: string;
+  browserSpecificSettings: {
+    gecko: {
+      id: string;
+    };
+  } | null;
 };
 function manifest({
   entry,
   outputDirectory,
   description,
+  browserSpecificSettings,
 }: ManifestConfig): Configuration {
   return {
     entry: entry,
@@ -90,7 +103,7 @@ function manifest({
           {
             from: entry,
             transform: function (manifestBuffer: Buffer, path: string) {
-              const manifestString = manifestBuffer
+              let manifestString = manifestBuffer
                 .toString()
                 .replace(/\$\{DESCRIPTION\}/, description)
                 .replace(/\$\{OPTIONS_UI_PATH\}/g, OPTIONS_UI_PATH)
@@ -98,6 +111,12 @@ function manifest({
                 .replace(/\$\{PACKAGE_VERSION\}/g, PACKAGE_VERSION)
                 .replace(/\$\{POPUP_PATH\}/g, POPUP_PATH)
                 .replace(/\$\{CONTENT_SCRIPT_PATH\}/g, CONTENT_SCRIPT_PATH);
+              if (browserSpecificSettings) {
+                const manifestJson = JSON.parse(manifestString);
+                manifestJson.browser_specific_settings =
+                  browserSpecificSettings;
+                manifestString = JSON.stringify(manifestJson);
+              }
               return Buffer.from(manifestString);
             },
           },
@@ -169,6 +188,11 @@ function popup({ entry, outputDirectory }: PopupConfig): Configuration {
     output: {
       path: path.resolve(__dirname, outputDirectory),
     },
+    plugins: [
+      new HtmlWebPackPlugin({
+        title: `Selection Highlighter Options`,
+      }),
+    ],
     // optimization: {
     //   minimize: true,
     // },
@@ -205,11 +229,6 @@ function popup({ entry, outputDirectory }: PopupConfig): Configuration {
         },
       ],
     },
-    plugins: [
-      new HtmlWebPackPlugin({
-        title: `Selection Highlighter Options`,
-      }),
-    ],
     stats: true,
     mode: `none`,
   };

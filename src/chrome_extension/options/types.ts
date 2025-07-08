@@ -17,6 +17,7 @@ export interface Options {
 export function isOptions(options: any): options is Options {
   return (
     typeof options === "object" &&
+    options !== null &&
     isNumber(options.minSelectionString) &&
     options.minSelectionString >= 1 &&
     isStringArray(options.denyListedHosts) &&
@@ -93,6 +94,6 @@ export function isStringArray(value: any): value is string[] {
 export function isStyleObject(
   value: any
 ): value is { [styleProperty: string]: string } {
-  if (typeof value !== "object") return false;
+  if (typeof value !== "object" || value === null) return false;
   return Object.entries(value).every(([k, v]) => isString(k) && isString(v));
 }

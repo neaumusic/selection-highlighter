@@ -206,12 +206,13 @@ function drawScrollMarkers(runNumber: number) {
     const { width, height } = scrollMarkersCanvasContext.canvas;
     scrollMarkersCanvasContext.clearRect(0, 0, width, height);
   });
-
-  for (let range of highlights.values()) {
+  const highlightRanges = Array.from(highlights.values());
+  for (let range of highlightRanges) {
     requestAnimationFrame(() => {
       if (runNumber !== latestRunNumber) return;
       const dpr = devicePixelRatio || 1;
-      const clientRect = range.getBoundingClientRect();
+      // Cast the range to Range type
+      const clientRect = (range as Range).getBoundingClientRect();
       if (!clientRect.width || !clientRect.height) return;
 
       // window height times percent of element position in document

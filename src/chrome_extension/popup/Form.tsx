@@ -1,3 +1,4 @@
+import browser from "webextension-polyfill";
 import styled from "@emotion/styled";
 import React, { useEffect, useState } from "react";
 import {
@@ -24,10 +25,10 @@ export const Form: React.FC = () => {
   const [options, setOptions] = useState(defaultOptions);
 
   useEffect(() => {
-    chrome.storage.sync.get(["options"], (data) => {
+    browser.storage.sync.get(["options"]).then((data) => {
       if (isOptions(data.options)) {
         setOptions(data.options);
-      } else if (typeof options === "object") {
+      } else if (typeof options === "object" && options !== null) {
         setOptions(backfillOptions(options));
       } else {
         setOptions(defaultOptions);
@@ -37,11 +38,11 @@ export const Form: React.FC = () => {
 
   useEffect(() => {
     if (isOptions(options)) {
-      chrome.storage.sync.set({ options });
-    } else if (typeof options === "object") {
-      chrome.storage.sync.set({ options: backfillOptions(options) });
+      browser.storage.sync.set({ options });
+    } else if (typeof options === "object" && options !== null) {
+      browser.storage.sync.set({ options: backfillOptions(options) });
     } else {
-      chrome.storage.sync.set({ options: defaultOptions });
+      browser.storage.sync.set({ options: defaultOptions });
     }
   }, [options]);
 

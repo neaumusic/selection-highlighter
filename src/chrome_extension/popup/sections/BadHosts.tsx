@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { defaultOptions, Options } from "../../options/types";
 import { LabelText, TextAreaWithStatus, VerticalLabel } from "../Form";
+import { quoteNormalized } from "../utils";
 
 type BadHostsProps = {
   options: Options;
@@ -25,11 +26,12 @@ export function BadHosts({ options, setOptions }: BadHostsProps) {
           denyListedHostsString !== JSON.stringify(options.denyListedHosts)
         }
         onChange={(e) => {
-          setDenyListedHostsString(e.currentTarget.value);
+          const value = quoteNormalized(e.currentTarget.value);
+          setDenyListedHostsString(value);
           try {
             setOptions({
               ...options,
-              denyListedHosts: JSON.parse(e.currentTarget.value),
+              denyListedHosts: JSON.parse(value),
             });
           } catch (e) {
             console.log(e);

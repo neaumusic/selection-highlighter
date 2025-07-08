@@ -19,7 +19,8 @@
     "url": "https://github.com/neaumusic/selection-highlighter/issues"
   },
   "volta": {
-    "node": "20.10.0"
+    "node": "20.10.0",
+    "yarn": "4.9.2"
   },
   "homepage": "https://github.com/neaumusic/selection-highlighter#readme",
   "devDependencies": {
@@ -32,6 +33,7 @@
     "@types/node": "^20.10.8",
     "@types/react": "^18.0.26",
     "@types/react-dom": "^18.0.11",
+    "@types/webextension-polyfill": "^0.12.3",
     "@types/webpack": "^4.41.38",
     "babel-loader": "^8.1.0",
     "clean-webpack-plugin": "^3.0.0",
@@ -44,8 +46,8 @@
     "remove-files-webpack-plugin": "^1.4.2",
     "ts-node": "^10.9.2",
     "typescript": "^4.9.4",
+    "webextension-polyfill": "^0.12.0",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.11"
-  },
-  "dependencies": {}
+  }
 }
