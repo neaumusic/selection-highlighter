@@ -1,5 +1,20 @@
 #!/bin/bash
 
+# Deployment Instructions:
+# - The "Team" for code signing must be specified in the Xcode project settings.
+# - To deploy the extension to a device or simulator, open the generated Xcode project.
+# - In Xcode, select the desired target (iOS or macOS) in the scheme selector at the top.
+# - Click the "Play" (Run) button to build and run the extension on the selected platform.
+
+# NOTE: Xcode and safari-web-extension-converter have issues
+# - After converting the extension, to match App Store Connect you may need to update the version number in the Xcode.
+# - The bundle identifier must be all lowercase (e.g., "com.neaumusic.selection-highlighter").
+#   If the converter or Xcode generates an uppercase or mixed-case identifier, change it to match the App Store Connect details.
+# - For macOS targets, ensure the (macOS) Info.plist includes the "App Category".
+# - For actual distribution (App Store or TestFlight), use Product > Archive in Xcode for the appropriate target (iOS or macOS).
+# - After archiving, Xcode will guide you through uploading the build to App Store Connect (https://appstoreconnect.apple.com/).
+# - App Store Connect is where you manage your app's store listing, metadata, and push builds to TestFlight for beta testing.
+
 # check if xcode is installed
 if ! command -v xcode-select &> /dev/null; then
     echo "Xcode is not installed; please install it from the App Store"

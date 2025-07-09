@@ -109,7 +109,7 @@ function manifest({
                 const manifestJson = JSON.parse(manifestString);
                 manifestJson.browser_specific_settings =
                   browserSpecificSettings;
-                manifestString = JSON.stringify(manifestJson);
+                manifestString = JSON.stringify(manifestJson, null, 2);
               }
               return Buffer.from(manifestString);
             },

@@ -47,5 +47,5 @@ GitHub (build source):
    - Safari: a bit more complicated, Google is your friend
      - you will need to allow unsigned extensions in macOS Safari - Settings - Advanced
      - for iOS you will likely need to create an Apple Developer account for signing/deploying to your connected device (and Simulator?) via Xcode
-     - you may want to change the Bundle Identifier in `build_safari.sh`, run `yarn clean` and rebuild everything
-6. For development I use `yarn watch` and refresh the extension or re-deploy to iOS/Safari
+     - see `build_safari.sh` for more details
+6. For development, I use `yarn watch` and refresh the extension or re-deploy to iOS/Safari
