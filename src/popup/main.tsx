@@ -16,6 +16,11 @@ createRoot(root).render(
           box-sizing: border-box;
         }
         @media (prefers-color-scheme: dark) {
+          html,
+          body {
+            background-color: rgb(41, 42, 45) !important;
+            color: #c8c8c8 !important;
+          }
           background-color: rgb(41, 42, 45) !important;
           color: #c8c8c8 !important;
           * {
