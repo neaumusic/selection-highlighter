@@ -36,6 +36,8 @@ let latestRunNumber = 0;
 
 /** @ts-ignore this is a new API */
 const highlights = new Highlight();
+/** stored separately since firefox complains about highlights.values() */
+let highlightRanges: Range[] = [];
 /** @ts-ignore this is a new API */
 CSS.highlights.set(highlightName(), highlights);
 
@@ -60,6 +62,7 @@ function onSelectionChange() {
 
 function highlight(runNumber: number) {
   highlights.clear();
+  highlightRanges = [];
 
   const selection = document.getSelection();
   if (!isSelectionWithAnchorAndFocusNodes(selection)) return;
@@ -113,6 +116,7 @@ function highlight(runNumber: number) {
       range.setStart(textNode, matchIndex);
       range.setEnd(textNode, matchIndex + selectionString.length);
       highlights.add(range);
+      highlightRanges.push(range);
     }
   }
 }
@@ -206,13 +210,11 @@ function drawScrollMarkers(runNumber: number) {
     const { width, height } = scrollMarkersCanvasContext.canvas;
     scrollMarkersCanvasContext.clearRect(0, 0, width, height);
   });
-  const highlightRanges = Array.from(highlights.values());
   for (let range of highlightRanges) {
     requestAnimationFrame(() => {
       if (runNumber !== latestRunNumber) return;
       const dpr = devicePixelRatio || 1;
-      // Cast the range to Range type
-      const clientRect = (range as Range).getBoundingClientRect();
+      const clientRect = range.getBoundingClientRect();
       if (!clientRect.width || !clientRect.height) return;
 
       // window height times percent of element position in document
