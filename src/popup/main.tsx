@@ -14,6 +14,8 @@ createRoot(root).render(
           padding: 0;
           margin: 0;
           box-sizing: border-box;
+          background: lightgrey;
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
         }
         @media (prefers-color-scheme: dark) {
           html,
