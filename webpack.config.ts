@@ -1,5 +1,5 @@
 import path from "path";
-import { Configuration } from "webpack";
+import { Configuration, DefinePlugin } from "webpack";
 
 import packageJson from "./package.json";
 import { CleanWebpackPlugin } from "clean-webpack-plugin";
@@ -23,6 +23,7 @@ const config: Configuration[] = [
     outputDirectory: `dist/chrome_extension/content_script`,
   }),
   popup({
+    doesSupportPaypal: true,
     entry: `./src/popup/main.tsx`,
     outputDirectory: `dist/chrome_extension/popup`,
   }),
@@ -44,6 +45,7 @@ const config: Configuration[] = [
     outputDirectory: `dist/firefox_extension/content_script`,
   }),
   popup({
+    doesSupportPaypal: true,
     entry: `./src/popup/main.tsx`,
     outputDirectory: `dist/firefox_extension/popup`,
   }),
@@ -62,6 +64,7 @@ const config: Configuration[] = [
     outputDirectory: `build/safari_extension/content_script`,
   }),
   popup({
+    doesSupportPaypal: false,
     entry: `./src/popup/main.tsx`,
     outputDirectory: `build/safari_extension/popup`,
   }),
@@ -172,10 +175,15 @@ function content_script({
 }
 
 type PopupConfig = {
+  doesSupportPaypal: boolean;
   entry: string;
   outputDirectory: string;
 };
-function popup({ entry, outputDirectory }: PopupConfig): Configuration {
+function popup({
+  doesSupportPaypal,
+  entry,
+  outputDirectory,
+}: PopupConfig): Configuration {
   return {
     entry: entry,
     output: {
@@ -184,6 +192,9 @@ function popup({ entry, outputDirectory }: PopupConfig): Configuration {
     plugins: [
       new HtmlWebPackPlugin({
         title: `Selection Highlighter Options`,
+      }),
+      new DefinePlugin({
+        "process.env.DOES_SUPPORT_PAYPAL": JSON.stringify(doesSupportPaypal),
       }),
     ],
     module: {

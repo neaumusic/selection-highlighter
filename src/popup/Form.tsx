@@ -12,6 +12,8 @@ import { ScrollMarkers } from "./sections/ScrollMarkers";
 import { ScrollMarkersDebounce } from "./sections/ScrollMarkersDebounce";
 import { WholeWord } from "./sections/WholeWord";
 
+const doesSupportPaypal = process.env.DOES_SUPPORT_PAYPAL;
+
 export const Form: React.FC = () => {
   const [options, setOptions] = useState(defaultOptions);
 
@@ -52,12 +54,20 @@ export const Form: React.FC = () => {
         <ResetButton type="button" onClick={() => setOptions(defaultOptions)}>
           Reset
         </ResetButton>
-        <PaypalLink
-          target="_blank"
-          href="https://www.paypal.com/donate/?business=L5G6ATNAMJHC4&no_recurring=0&currency_code=USD"
-        >
-          <button type="button">Paypal</button>
-        </PaypalLink>
+        {doesSupportPaypal && (
+          <PaypalButton
+            type="button"
+            title="https://www.paypal.com/donate/?business=L5G6ATNAMJHC4&no_recurring=0&currency_code=USD"
+            onClick={() =>
+              window.open(
+                "https://www.paypal.com/donate/?business=L5G6ATNAMJHC4&no_recurring=0&currency_code=USD",
+                "_blank"
+              )
+            }
+          >
+            Paypal
+          </PaypalButton>
+        )}
       </FormButtons>
     </FormContainer>
   );
@@ -109,6 +119,6 @@ const FormButtons = styled.div`
 const ResetButton = styled.button`
   flex: 0 1 0;
 `;
-const PaypalLink = styled.a`
+const PaypalButton = styled.button`
   flex: 0 1 0;
 `;

@@ -1,6 +1,6 @@
 {
   "name": "selection_highlighter",
-  "version": "3.3.0",
+  "version": "3.3.1",
   "description": "browser highlighter for code analysis",
   "scripts": {
     "build": "webpack",
