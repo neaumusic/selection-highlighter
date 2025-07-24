@@ -9,7 +9,7 @@
     "zip": "yarn build && yarn build:safari && yarn zip:chrome && yarn zip:firefox && yarn zip:safari",
     "zip:chrome": "web-ext build -o -s ./dist/chrome_extension/ -a ./dist/ -n selection_highlighter_chrome_extension.zip",
     "zip:firefox": "web-ext build -o -s ./dist/firefox_extension/ -a ./dist/ -n selection_highlighter_firefox_extension.zip",
-    "zip:safari": "cd ./dist/safari_extension && zip ../selection_highlighter_safari_extension.zip 'Selection Highlighter'"
+    "zip:safari": "cd ./dist/safari_extension && zip -r ../selection_highlighter_safari_extension.zip ."
   },
   "repository": {
     "type": "git",
