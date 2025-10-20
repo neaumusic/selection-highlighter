@@ -27,6 +27,10 @@ Firefox Add-ons (packed, .xpi):
 1. Visit the [Firefox Addons page](https://addons.mozilla.org/en-US/firefox/addon/selection-highlighter-v2/)
 2. Click "Add to Firefox", click "Add"
 
+Safari (Mac/iOS)
+1. Visit the [App Store page](https://apps.apple.com/us/app/selection-highlighter/id6476020741)
+2. Click "Get", confirm purchase (supports the yearly developer license)
+
 GitHub (latest release):
 
 1. Click [Releases](https://github.com/neaumusic/selection-highlighter/releases), download the latest `selection_highlighter_chrome_extension.zip` or `selection_highlighter_firefox_extension.zip` asset, unzip the folder to a permanent location
